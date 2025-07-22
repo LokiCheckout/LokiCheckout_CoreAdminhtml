@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "LokiCheckout_Core",
+    "loki-checkout/magento2-core"
+  ]
+}
