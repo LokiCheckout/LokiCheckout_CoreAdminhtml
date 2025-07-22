@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="LokiCheckout_CoreAdminhtml::modules" title="LokiCheckout Module Overview" sortOrder="1"/>
+                <resource id="LokiCheckout_CoreAdminhtml::check" title="LokiCheckout System Check" sortOrder="1"/>
+            </resource>
+        </resources>
+    </acl>
+</config>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="LokiCheckout_CoreAdminhtml::index" title="LokiCheckout" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="45" parent="Magento_Backend::system" resource="LokiCheckout_CoreAdminhtml::index"/>
+
+        <add id="LokiCheckout_CoreAdminhtml::modules" title="Module Overview" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="10" parent="LokiCheckout_CoreAdminhtml::index" action="loki_checkout/modules/index/" resource="LokiCheckout_CoreAdminhtml::modules"/>
+
+        <add id="LokiCheckout_CoreAdminhtml::check" title="System Check" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="10" parent="LokiCheckout_CoreAdminhtml::index" action="loki_checkout/check/index/" resource="LokiCheckout_CoreAdminhtml::check"/>
+    </menu>
+</config>

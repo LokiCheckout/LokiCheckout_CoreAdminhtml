@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="LokiCheckout\CoreAdminhtml\ViewModel\SystemCheckCollection">
+        <arguments>
+            <argument name="systemChecks" xsi:type="array">
+                <item name="modules_enabled" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\ModulesEnabled</item>
+                <item name="dev_modules" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\DevModules</item>
+                <item name="store_country_id" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\StoreCountryId</item>
+                <item name="merchant_vat_number" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\MerchantVatNumber</item>
+                <item name="address_lines" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\AddressLines</item>
+                <item name="csp" xsi:type="object">LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\CspMode</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
