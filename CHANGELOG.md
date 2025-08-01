@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 01 August 2025
+### Fixed
+- Make strings translatable
+
 ## [1.0.1] - 22 July 2025
 ### Fixed
 - Fix PSR-4 namespace
