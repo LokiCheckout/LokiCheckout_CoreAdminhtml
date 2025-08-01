@@ -58,18 +58,18 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
                 <td>
                     <div class="data-grid-cell-content">
                         <?php if ($module->isEnabled()): ?>
-                            <span class="module-status module-status-notice">Enabled</span>
+                            <span class="module-status module-status-notice"><?= __('Enabled') ?></span>
                         <?php else: ?>
-                            <span class="module-status module-status-error">Disabled</span>
+                            <span class="module-status module-status-error"><?= __('Disabled') ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
                 <td>
                     <div class="data-grid-cell-content">
                         <?php if ($module->isLokiCheckoutRegistered()): ?>
-                            <span class="module-status module-status-notice">Yes</span>
+                            <span class="module-status module-status-notice"><?= __('Yes') ?></span>
                         <?php else: ?>
-                            <span class="module-status module-status-warning">No</span>
+                            <span class="module-status module-status-warning"><?= __('No') ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
