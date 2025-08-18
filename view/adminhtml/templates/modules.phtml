@@ -7,7 +7,13 @@ use LokiCheckout\CoreAdminhtml\ViewModel\Modules;
 /** @var ViewModelFactory $viewModelFactory */
 /** @var Modules $modulesViewModel */
 $modulesViewModel = $viewModelFactory->create(Modules::class);
+$modules = $modulesViewModel->getModules();
+$showRegistered = $modulesViewModel->showRegistered();
 ?>
+<div class="admin__data-grid-header admin__data-grid-toolbar">
+    <div class="admin__data-grid-header-row"></div>
+    <div class="admin__data-grid-header-row"><?= __ ('%1 modules found', count($modules)) ?></div>
+</div>
 
 <div class="admin__data-grid-wrap">
     <table class="data-grid">
@@ -23,11 +29,13 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
                     <?= __('Module status') ?>
                 </span>
             </th>
+            <?php if ($showRegistered): ?>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content" title="Optional DI hook for various tasks">
                     <?= __('LokiCheckout registered') ?>
                 </span>
             </th>
+            <?php endif; ?>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content">
                     <?= __('Composer name') ?>
@@ -46,7 +54,7 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($modulesViewModel->getModules() as $module): ?>
+        <?php foreach ($modules as $module): ?>
             <tr>
                 <td>
                     <div class="data-grid-cell-content">
@@ -64,6 +72,7 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
                         <?php endif; ?>
                     </div>
                 </td>
+                <?php if ($showRegistered): ?>
                 <td>
                     <div class="data-grid-cell-content">
                         <?php if ($module->isLokiCheckoutRegistered()): ?>
@@ -73,6 +82,7 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
                         <?php endif; ?>
                     </div>
                 </td>
+                <?php endif; ?>
                 <td>
                     <div class="data-grid-cell-content">
                         <code><?= $module->getComposerName() ?></code>
