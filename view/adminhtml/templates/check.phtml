@@ -37,17 +37,17 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
                 <tr>
                     <td>
                         <div class="data-grid-cell-content">
-                            <?= $checkResult->getLabel() ?>
+                            <?= $escaper->escapeHtml($checkResult->getLabel()) ?>
                         </div>
                     </td>
                     <td>
-                        <div class="data-grid-cell-content system-check system-check-<?= $valueClassSuffix ?>">
-                            <?= $checkResult->getValue() ?>
+                        <div class="data-grid-cell-content system-check system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
+                            <?= $escaper->escapeHtml($checkResult->getValue()) ?>
                         </div>
                     </td>
                     <td>
                         <div class="data-grid-cell-content">
-                            <?= $checkResult->getRecommendation() ?>
+                            <?= $escaper->escapeHtml($checkResult->getRecommendation()) ?>
                         </div>
                     </td>
                 </tr>

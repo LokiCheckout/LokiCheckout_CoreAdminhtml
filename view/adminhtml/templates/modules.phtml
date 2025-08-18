@@ -12,7 +12,7 @@ $showRegistered = $modulesViewModel->showRegistered();
 ?>
 <div class="admin__data-grid-header admin__data-grid-toolbar">
     <div class="admin__data-grid-header-row"></div>
-    <div class="admin__data-grid-header-row"><?= __ ('%1 modules found', count($modules)) ?></div>
+    <div class="admin__data-grid-header-row"><?= $escaper->escapeHtml(__ ('%1 modules found', count($modules))) ?></div>
 </div>
 
 <div class="admin__data-grid-wrap">
@@ -21,34 +21,34 @@ $showRegistered = $modulesViewModel->showRegistered();
         <tr>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content">
-                    <?= __('Module name') ?>
+                    <?= $escaper->escapeHtml(__('Module name')) ?>
                 </span>
             </th>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content">
-                    <?= __('Module status') ?>
+                    <?= $escaper->escapeHtml(__('Module status')) ?>
                 </span>
             </th>
             <?php if ($showRegistered): ?>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content" title="Optional DI hook for various tasks">
-                    <?= __('LokiCheckout registered') ?>
+                    <?= $escaper->escapeHtml(__('LokiCheckout registered')) ?>
                 </span>
             </th>
             <?php endif; ?>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content">
-                    <?= __('Composer name') ?>
+                    <?= $escaper->escapeHtml(__('Composer name')) ?>
                 </span>
             </th>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content" title="Current version locked in your root composer.lock">
-                    <?= __('Current version') ?>
+                    <?= $escaper->escapeHtml(__('Current version')) ?>
                 </span>
             </th>
             <th class="data-grid-th">
                 <span class="data-grid-cell-content" title="Latest version as read from https://composer.yireo.com/">
-                    <?= __('Newest version') ?>
+                    <?= $escaper->escapeHtml(__('Newest version')) ?>
                 </span>
             </th>
         </tr>
@@ -58,17 +58,17 @@ $showRegistered = $modulesViewModel->showRegistered();
             <tr>
                 <td>
                     <div class="data-grid-cell-content">
-                        <a target="_new" href="https://loki-checkout.com/docs/04-modules/<?= $module->getName() ?>">
-                            <?= $module->getName() ?>
+                        <a target="_new" href="https://loki-checkout.com/docs/04-modules/<?= $escaper->escapeHtml($module->getName()) ?>">
+                            <?= $escaper->escapeHtml($module->getName()) ?>
                         </a>
                     </div>
                 </td>
                 <td>
                     <div class="data-grid-cell-content">
                         <?php if ($module->isEnabled()): ?>
-                            <span class="module-status module-status-notice"><?= __('Enabled') ?></span>
+                            <span class="module-status module-status-notice"><?= $escaper->escapeHtml(__('Enabled')) ?></span>
                         <?php else: ?>
-                            <span class="module-status module-status-error"><?= __('Disabled') ?></span>
+                            <span class="module-status module-status-error"><?= $escaper->escapeHtml(__('Disabled')) ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
@@ -76,25 +76,25 @@ $showRegistered = $modulesViewModel->showRegistered();
                 <td>
                     <div class="data-grid-cell-content">
                         <?php if ($module->isLokiCheckoutRegistered()): ?>
-                            <span class="module-status module-status-notice"><?= __('Yes') ?></span>
+                            <span class="module-status module-status-notice"><?= $escaper->escapeHtml(__('Yes')) ?></span>
                         <?php else: ?>
-                            <span class="module-status module-status-warning"><?= __('No') ?></span>
+                            <span class="module-status module-status-warning"><?= $escaper->escapeHtml(__('No')) ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
                 <?php endif; ?>
                 <td>
                     <div class="data-grid-cell-content">
-                        <code><?= $module->getComposerName() ?></code>
+                        <code><?= $escaper->escapeHtml($module->getComposerName()) ?></code>
                     </div>
                 </td>
                 <td>
                     <div class="data-grid-cell-content">
-                        <code title="<?= $module->getDate() ?>">
+                        <code title="<?= $escaper->escapeHtml($module->getDate()) ?>">
                             <?php if ($module->isDevVersion()): ?>
-                                <?= $modulesViewModel->shortenGitCommit($module->getGitInfo()->getCommit()) ?>
+                                <?= $escaper->escapeHtml($modulesViewModel->shortenGitCommit($module->getGitInfo()->getCommit())) ?>
                             <?php else: ?>
-                                <?= $module->getComposerVersion() ?>
+                                <?= $escaper->escapeHtml($module->getComposerVersion()) ?>
                             <?php endif; ?>
                         </code>
                     </div>
@@ -102,8 +102,8 @@ $showRegistered = $modulesViewModel->showRegistered();
                 <td>
                     <div class="data-grid-cell-content">
                         <?php $cssClass = $modulesViewModel->getLatestModuleVersionClass($module); ?>
-                        <span class="module-status module-status-<?= $cssClass ?>" title="<?= $module->getLatestModuleDate() ?>">
-                            <?= $modulesViewModel->getLatestModuleVersion($module) ?>
+                        <span class="module-status module-status-<?= $escaper->escapeHtml($cssClass) ?>" title="<?= $escaper->escapeHtml($module->getLatestModuleDate()) ?>">
+                            <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
                         </span>
                     </div>
                 </td>
