@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LokiCheckout\CoreAdminhtml\ViewModel;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -18,6 +19,7 @@ class Modules implements ArgumentInterface
         private readonly ComposerPackageFactory $composerPackageFactory,
         private readonly LokiCheckoutModules $lokiCheckoutModules,
         private readonly ModuleFactory $moduleFactory,
+        private readonly ScopeConfigInterface $scopeConfig,
     ) {
     }
 
@@ -82,5 +84,10 @@ class Modules implements ArgumentInterface
     public function shortenGitCommit(string $gitCommit): string
     {
         return substr($gitCommit, strlen($gitCommit) - 8, 8);
+    }
+
+    public function showRegistered(): bool
+    {
+        return (bool)$this->scopeConfig->getValue('loki_checkout/module_overview/show_registered');
     }
 }

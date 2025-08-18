@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="loki_checkout">
+            <group id="module_overview" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Module Overview</label>
+                <field id="show_registered"
+                       translate="label"
+                       type="select"
+                       sortOrder="1"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="0">
+                    <label>Show Registration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>Show whether or not a module is registered with the LokiCheckout. This is needed for Luma Tailwind compilation.</tooltip>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
