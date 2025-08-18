@@ -1,6 +1,6 @@
 {
     "name": "loki-checkout/magento2-core-adminhtml",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Magento Admin Panel module for LokiCheckout",
     "type": "magento2-module",
     "require": {
