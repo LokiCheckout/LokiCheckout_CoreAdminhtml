@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 21 August 2025
+### Fixed
+- Add dependency with loki/magento2-css-utils
+- Declare used PHP namespaces
+- Document latest version of template
+
 ## [1.0.4] - 18 August 2025
 ### Fixed
 - Add config option to hide registration-column
