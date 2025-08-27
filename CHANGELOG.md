@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 27 August 2025
+### Fixed
+- Add CI files
+- Make sure to list any module prefixed with LokiCheckout_ or Loki_
+- Replace yireo/opensearch with yireo/opensearch-dummy in Gitlab CI
+
 ## [1.0.5] - 21 August 2025
 ### Fixed
 - Add dependency with loki/magento2-css-utils
