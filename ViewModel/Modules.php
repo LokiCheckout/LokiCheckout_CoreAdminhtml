@@ -33,7 +33,9 @@ class Modules implements ArgumentInterface
         foreach ($this->moduleListLoader->load() as $module) {
             $moduleName = $module['name'];
             $isLokiCheckoutRegistered = $this->lokiCheckoutModules->hasModule($moduleName);
-            if (false === str_contains($moduleName, 'LokiCheckout') && false === $isLokiCheckoutRegistered) {
+            if (false === str_contains($moduleName, 'LokiCheckout_')
+                && false === str_contains($moduleName, 'Loki_')
+                && false === $isLokiCheckoutRegistered) {
                 continue;
             }
 
