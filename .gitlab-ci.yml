@@ -1,6 +1,5 @@
-image: yireo/magento2installed:2.4.7-p4
-
 stages:
+  - linting
   - basic
   - advanced
 
@@ -13,21 +12,27 @@ variables:
   ES_SETTING_DISCOVERY_TYPE: "single-node"
   ES_SETTING_XPACK_SECURITY_ENABLED: "false"
 
-php-8.3-linting:
-  stage: basic
+php-linting:
+  image: yireo/php-testbox:$PHP_VERSION
+  stage: linting
   script:
-    - source .module.ini && echo $PHP_VERSIONS | grep 8.3 || exit
+    - cat .module.ini | grep PHP_VERSIONS | grep -q $PHP_VERSION || exit 0
     - sh -c 'if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -v "^No syntax errors detected"; then exit 1; fi'
+  parallel:
+    matrix:
+      - PHP_VERSION: ['8.1', '8.2', '8.3', '8.4']
 
 magento-unit-tests:
+  image: yireo/magento2installed:2.4.8
   stage: basic
   script:
-    - source .module.ini && echo $PHP_VERSIONS | grep 8.3 || exit 0
+    - cat .module.ini | grep PHP_VERSIONS | grep -q 8.4 || exit 0
     - test -d $CI_PROJECT_DIR/Test/Unit/ || exit 0
+    - source .module.ini
     - cd /tmp/magento
     - composer config gitlab-token.gitlab.yireo.com gitlab-ci-token $CI_JOB_TOKEN
-    - composer config repositories.local-source path $CI_PROJECT_DIR
     - composer config repositories.loki-checkout composer https://gitlab.yireo.com/api/v4/group/loki-checkout/-/packages/composer/packages.json
+    - composer config repositories.local-source path $CI_PROJECT_DIR
     - composer require --prefer-source -- $COMPOSER_NAME:@dev
     - export MAGENTO_MODULE=${EXTENSION_VENDOR}_${EXTENSION_NAME}
     - cd /tmp/magento/dev/tests/unit/
@@ -36,28 +41,30 @@ magento-unit-tests:
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
 magento-integration-tests:
+  image: yireo/magento2installed:2.4.8
   stage: advanced
   script:
-    - source .module.ini && echo $PHP_VERSIONS | grep 8.3 || exit 0
-    - test -d $CI_PROJECT_DIR/Test/Integration/ || exit 0
+    - cat .module.ini | grep PHP_VERSIONS | grep -q 8.4 || exit 0
+    - test -d Test/Integration/ || exit 0
+    - source .module.ini
     - cd /tmp/magento
     - composer config gitlab-token.gitlab.yireo.com gitlab-ci-token $CI_JOB_TOKEN
-    - composer config repositories.local-source path $CI_PROJECT_DIR
     - composer config repositories.loki-checkout composer https://gitlab.yireo.com/api/v4/group/loki-checkout/-/packages/composer/packages.json
+    - composer config repositories.local-source path $CI_PROJECT_DIR
     - composer require --prefer-source -- $COMPOSER_NAME:@dev
-    - export MAGENTO_MODULE=${EXTENSION_VENDOR}_${EXTENSION_NAME}
     - curl -sf -o /dev/null http://opensearch:9200  || (echo "ElasticSearch not alive" && exit 1)
     - cd /tmp/magento/dev/tests/integration/
     - cp $CI_PROJECT_DIR/.gitlab-ci/integration-tests/install-config-mysql.php etc/install-config-mysql.php
-    - cp $CI_PROJECT_DIR/.gitlab-ci/integration-tests/phpunit.xml phpunit.xml
-    - php -d memory_limit=4G ../../../vendor/bin/phpunit -c phpunit.xml --coverage-text --colors=never ../../../vendor/$COMPOSER_NAME/Test/Integration
+    - cp $CI_PROJECT_DIR/.gitlab-ci/integration-tests/phpunit10.xml phpunit.xml
+    - MAGENTO_MODULE_FOLDER=vendor/$COMPOSER_NAME php -d display_errors=1 -d memory_limit=4G ../../../vendor/bin/phpunit --coverage-text ../../../vendor/$COMPOSER_NAME/Test/Integration/
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
-
-services:
-  - mysql:8.0
-  - redis:latest
-  - name: yireo/opensearch-dummy
-    alias: opensearch
+  services:
+    - name: yireo/mysql:8.0
+      alias: mysql
+    - name: redis:latest
+      alias: redis
+    - name: yireo/opensearch-dummy
+      alias: opensearch
 
 cache:
   key: "$CI_JOB_NAME"
