@@ -1,0 +1,17 @@
+{
+    "modules": [
+        "Magento_Config",
+        "Magento_Backend",
+        "Loki_Components",
+        "LokiCheckout_Core"
+    ],
+    "components": [],
+    "config": [
+        {
+            "path": "loki_checkout\/module_overview\/show_registered",
+            "label": "Module Overview > Show Registration",
+            "description": "Show whether or not a module is registered with the LokiCheckout. This is needed for Luma Tailwind compilation."
+        }
+    ],
+    "tests": []
+}
