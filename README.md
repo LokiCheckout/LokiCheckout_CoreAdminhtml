@@ -1,6 +1,6 @@
 # LokiCheckout_CoreAdminhtml
 
-**This Magento 2 module does something spectaculair**
+**This Magento 2 module is an add-on to the Loki Checkout core. It adds some admin pages for easier troubleshooting and support purposes.**
 
 ### Installation
 ```bash
