@@ -1,15 +1,15 @@
 {
-    "name": "loki-checkout\/magento2-core-adminhtml",
+    "name": "loki-checkout/magento2-core-adminhtml",
     "version": "1.0.7",
     "description": "Magento Admin Panel module for LokiCheckout",
     "type": "magento2-module",
     "require": {
-        "magento\/framework": "^103.0",
-        "magento\/module-backend": "^102.0",
-        "magento\/module-config": "^101.2",
-        "loki\/magento2-css-utils": "^1.0",
-        "loki\/magento2-components": "^2.0",
-        "loki-checkout\/magento2-core": "^2.0",
+        "magento/framework": "^103.0",
+        "magento/module-backend": "^102.0",
+        "magento/module-config": "^101.2",
+        "loki/magento2-css-utils": "^1.0",
+        "loki/magento2-components": "^2.0",
+        "loki-checkout/magento2-core": "^2.0",
         "ext-pcre": "*"
     },
     "license": [
@@ -23,5 +23,8 @@
             "LokiCheckout\\CoreAdminhtml\\": ""
         }
     },
-    "keywords": []
+    "keywords": [
+        "loki-checkout",
+        "loki-checkout-core"
+    ]
 }
