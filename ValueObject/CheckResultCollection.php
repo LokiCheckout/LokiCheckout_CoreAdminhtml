@@ -14,6 +14,9 @@ class CheckResultCollection
         $this->checkResults[] = $checkResult;
     }
 
+    /**
+     * @return CheckResult[]
+     */
     public function get(): array
     {
         return $this->checkResults;

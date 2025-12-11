@@ -35,8 +35,14 @@ abstract class SystemCheck implements SystemCheckInterface
                 $label,
                 $value,
                 $valid,
-                $recommendation
+                $recommendation,
+                $this->getUrl(),
             )
         );
+    }
+
+    public function getUrl(): string|null
+    {
+        return null;
     }
 }

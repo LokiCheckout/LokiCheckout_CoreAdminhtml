@@ -1,37 +1,39 @@
 <?php
 declare(strict_types=1);
 
-/** @version 1.0.7 */
-
+use Loki\CssUtils\Util\CssClass;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\Escaper;
 use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheckCollection;
 use Loki\Components\Factory\ViewModelFactory;
 
+/** @version 1.0.7 */
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelFactory $viewModelFactory */
 /** @var SystemCheckCollection $systemCheckCollection */
+/** @var CssClass $css */
+
 $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class);
 ?>
 
-<div class="<?= $css('admin__data-grid-wrap', '@todo') ?>">
-    <table class="<?= $css('data-grid', '@todo') ?>">
+<div class="<?= $css('loki-system-check admin__data-grid-wrap') ?>">
+    <table class="<?= $css('data-grid', 'table') ?>">
         <thead>
         <tr>
-            <th class="<?= $css('data-grid-th', '@todo') ?>">
-                <span class="<?= $css('data-grid-cell-content', '@todo') ?>">
-                    System Check
+            <th class="<?= $css('data-grid-th', 'th') ?>">
+                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
+                    <?= __('System Check') ?>
                 </span>
             </th>
-            <th class="<?= $css('data-grid-th', '@todo') ?>">
-                <span class="<?= $css('data-grid-cell-content', '@todo') ?>">
-                    Value
+            <th class="<?= $css('data-grid-th', 'th') ?>">
+                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
+                    <?= __('Value') ?>
                 </span>
             </th>
-            <th class="<?= $css('data-grid-th', '@todo') ?>">
-                <span class="<?= $css('data-grid-cell-content', '@todo') ?>">
-                    Recommendation
+            <th class="<?= $css('data-grid-th', 'th') ?>">
+                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
+                    <?= __('Recommendation') ?>
                 </span>
             </th>
         </tr>
@@ -42,17 +44,23 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
                 <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : 'error'; ?>
                 <tr>
                     <td>
-                        <div class="<?= $css('data-grid-cell-content', '@todo') ?>">
+                        <div class="<?= $css('data-grid-cell-content', 'label') ?>">
+                            <?php if ($checkResult->getUrl()): ?>
+                            <a href="<?= $checkResult->getUrl() ?>">
+                            <?php endif; ?>
                             <?= $escaper->escapeHtml($checkResult->getLabel()) ?>
+                            <?php if ($checkResult->getUrl()): ?>
+                            </a>
+                            <?php endif; ?>
                         </div>
                     </td>
                     <td>
-                        <div class="data-grid-cell-content system-check system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
+                        <div class="<?= $css('data-grid-cell-content system-check', 'value') ?> system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
                             <?= $escaper->escapeHtml($checkResult->getValue()) ?>
                         </div>
                     </td>
                     <td>
-                        <div class="<?= $css('data-grid-cell-content', '@todo') ?>">
+                        <div class="<?= $css('data-grid-cell-content', 'recommendation') ?>">
                             <?= $escaper->escapeHtml($checkResult->getRecommendation()) ?>
                         </div>
                     </td>

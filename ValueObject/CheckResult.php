@@ -8,7 +8,8 @@ class CheckResult
         private readonly string $label,
         private readonly mixed $value,
         private readonly bool $valid,
-        private readonly string $recommendation
+        private readonly string $recommendation,
+        private readonly string|null $url = null,
     ) {
     }
 
@@ -30,5 +31,10 @@ class CheckResult
     public function isValid(): bool
     {
         return $this->valid;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
     }
 }

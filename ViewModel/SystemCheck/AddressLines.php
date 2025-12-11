@@ -17,4 +17,12 @@ class AddressLines extends ScopeConfigValue
     {
         return 'Most of the time, 3 or 4 is a good idea';
     }
+
+    public function getUrl(): string|null
+    {
+        return $this->urlFactory->create()->getUrl(
+            'admin/system_config/edit',
+            ['section' => 'customer']
+            ).'#customer_address';
+    }
 }

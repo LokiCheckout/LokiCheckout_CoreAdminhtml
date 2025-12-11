@@ -9,4 +9,5 @@ use LokiCheckout\CoreAdminhtml\ValueObject\CheckResultCollection;
 interface SystemCheckInterface
 {
     public function getCheckResultCollection(): CheckResultCollection;
+    public function getUrl(): string|null;
 }

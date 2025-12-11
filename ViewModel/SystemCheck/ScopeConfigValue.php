@@ -4,11 +4,13 @@ namespace LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use LokiCheckout\CoreAdminhtml\ValueObject\CheckResultCollectionFactory;
+use Magento\Framework\UrlFactory;
 
 abstract class ScopeConfigValue extends SystemCheck
 {
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
+        protected readonly UrlFactory $urlFactory,
         CheckResultCollectionFactory $checkResultCollectionFactory,
     ) {
         parent::__construct($checkResultCollectionFactory);
