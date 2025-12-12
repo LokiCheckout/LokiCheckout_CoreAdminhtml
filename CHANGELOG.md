@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 12 December 2025
+### Fixed
+- Add option for useful URL per check result
+- Add plan-trial keyword to composer file
+- Update composer keywords
+- Update composer keywords
+- Update composer keywords
+- Update README
+
 ## [1.0.7] - 28 August 2025
 ### Fixed
 - Document latest version of template
