@@ -17,23 +17,23 @@ use Loki\Components\Factory\ViewModelFactory;
 $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class);
 ?>
 
-<div class="<?= $css('loki-system-check admin__data-grid-wrap') ?>">
-    <table class="<?= $css('data-grid', 'table') ?>">
+<div class="<?= $escaper->escapeHtml($css('loki-system-check admin__data-grid-wrap')) ?>">
+    <table class="<?= $escaper->escapeHtml($css('data-grid', 'table')) ?>">
         <thead>
         <tr>
-            <th class="<?= $css('data-grid-th', 'th') ?>">
-                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
-                    <?= __('System Check') ?>
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
+                    <?= $escaper->escapeHtml(__('System Check')) ?>
                 </span>
             </th>
-            <th class="<?= $css('data-grid-th', 'th') ?>">
-                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
-                    <?= __('Value') ?>
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
+                    <?= $escaper->escapeHtml(__('Value')) ?>
                 </span>
             </th>
-            <th class="<?= $css('data-grid-th', 'th') ?>">
-                <span class="<?= $css('data-grid-cell-content', 'th-span') ?>">
-                    <?= __('Recommendation') ?>
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
+                    <?= $escaper->escapeHtml(__('Recommendation')) ?>
                 </span>
             </th>
         </tr>
@@ -44,9 +44,9 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
                 <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : 'error'; ?>
                 <tr>
                     <td>
-                        <div class="<?= $css('data-grid-cell-content', 'label') ?>">
+                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'label')) ?>">
                             <?php if ($checkResult->getUrl()): ?>
-                            <a href="<?= $checkResult->getUrl() ?>">
+                            <a href="<?= $escaper->escapeUrl($checkResult->getUrl()) ?>">
                             <?php endif; ?>
                             <?= $escaper->escapeHtml($checkResult->getLabel()) ?>
                             <?php if ($checkResult->getUrl()): ?>
@@ -55,12 +55,12 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
                         </div>
                     </td>
                     <td>
-                        <div class="<?= $css('data-grid-cell-content system-check', 'value') ?> system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
+                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content system-check', 'value')) ?> system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
                             <?= $escaper->escapeHtml($checkResult->getValue()) ?>
                         </div>
                     </td>
                     <td>
-                        <div class="<?= $css('data-grid-cell-content', 'recommendation') ?>">
+                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'recommendation')) ?>">
                             <?= $escaper->escapeHtml($checkResult->getRecommendation()) ?>
                         </div>
                     </td>
