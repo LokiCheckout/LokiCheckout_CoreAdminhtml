@@ -13,7 +13,7 @@
                        showInStore="0">
                     <label>Show Registration</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>Show whether or not a module is registered with the LokiCheckout. This is needed for Luma Tailwind compilation.</tooltip>
+                    <tooltip>Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app/etc/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc.</tooltip>
                 </field>
             </group>
         </section>
