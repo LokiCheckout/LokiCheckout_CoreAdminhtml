@@ -1,16 +1,42 @@
 {
-    "modules": [
-        "Magento_Config",
-        "Magento_Backend",
+    "sequence": [
+        "LokiCheckout_Core",
         "Loki_Components",
-        "LokiCheckout_Core"
+        "Magento_Backend",
+        "Magento_Config"
+    ],
+    "modules": [
+        "LokiCheckout_Core",
+        "Loki_Base",
+        "Loki_Components",
+        "Loki_CssUtils",
+        "Loki_FieldComponents",
+        "Loki_MapComponents",
+        "Magento_Backend",
+        "Magento_Catalog",
+        "Magento_Checkout",
+        "Magento_CheckoutAgreements",
+        "Magento_Config",
+        "Magento_Customer",
+        "Magento_Directory",
+        "Magento_Eav",
+        "Magento_Newsletter",
+        "Magento_Payment",
+        "Magento_Quote",
+        "Magento_Sales",
+        "Magento_Shipping",
+        "Magento_Store",
+        "Magento_Tax",
+        "Magento_Theme",
+        "Magento_Vault",
+        "Yireo_CspUtilities"
     ],
     "components": [],
     "config": [
         {
             "path": "loki_checkout\/module_overview\/show_registered",
             "label": "Module Overview > Show Registration",
-            "description": "Show whether or not a module is registered with the LokiCheckout. This is needed for Luma Tailwind compilation."
+            "description": "Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app\/etc\/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc."
         }
     ],
     "tests": []
