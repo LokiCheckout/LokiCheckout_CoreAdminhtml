@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.11] - 18 February 2026
+### Fixed
+- Temporarily disable commit-versioning in Admin module listing
+
 ## [1.0.10] - 17 February 2026
 ### Fixed
 - Enhance tooltip for registration-column
