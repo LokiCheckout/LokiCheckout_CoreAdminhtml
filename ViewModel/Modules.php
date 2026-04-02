@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LokiCheckout\CoreAdminhtml\ViewModel;
 
+use LokiCheckout\CoreAdminhtml\ValueObject\GitInfo;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
@@ -32,14 +33,20 @@ class Modules implements ArgumentInterface
         $modules = [];
         foreach ($this->moduleListLoader->load() as $module) {
             $moduleName = $module['name'];
-            $isLokiCheckoutRegistered = $this->lokiCheckoutModules->hasModule($moduleName);
+            $isLokiCheckoutRegistered = $this->lokiCheckoutModules->hasModule(
+                $moduleName
+            );
             if (false === str_contains($moduleName, 'LokiCheckout_')
                 && false === str_contains($moduleName, 'Loki_')
-                && false === $isLokiCheckoutRegistered) {
+                && false === $isLokiCheckoutRegistered
+            ) {
                 continue;
             }
 
-            $composerPackage = $this->composerPackageFactory->createByModuleName($moduleName);
+            $composerPackage
+                = $this->composerPackageFactory->createByModuleName(
+                $moduleName
+            );
             $modules[] = $this->moduleFactory->create([
                 'moduleName' => $moduleName,
                 'composerPackage' => $composerPackage,
@@ -51,14 +58,12 @@ class Modules implements ArgumentInterface
 
     public function getLatestModuleVersion(Module $module): string
     {
-        /*if ($module->isDevVersion()) {
+        if ($module->isDevVersion()) {
             $latestCommit = $module->getLatestCommit();
             if (!empty($latestCommit)) {
-                return $this->shortenGitCommit($latestCommit);
+                return $this->shortenCommit($latestCommit);
             }
-
-            return 'unknown';
-        }*/
+        }
 
         $latestComposerVersion = $module->getLatestComposerVersion();
         if (!empty($latestComposerVersion)) {
@@ -78,20 +83,29 @@ class Modules implements ArgumentInterface
             return 'warning';
         }*/
 
-        if ($module->getComposerVersion() === $module->getLatestComposerVersion()) {
+        if ($module->getComposerVersion() === $module->getLatestComposerVersion(
+            )
+        ) {
             return 'notice';
         }
 
         return 'error';
     }
 
-    public function shortenGitCommit(string $gitCommit): string
+    public function getGitText(GitInfo $gitInfo): string
+    {
+        return $this->shortenCommit($gitInfo->getCommit()) . ' (' . $gitInfo->getBranch() . ')';
+    }
+
+    public function shortenCommit(string $gitCommit): string
     {
         return substr($gitCommit, strlen($gitCommit) - 8, 8);
     }
 
     public function showRegistered(): bool
     {
-        return (bool)$this->scopeConfig->getValue('loki_checkout/module_overview/show_registered');
+        return (bool)$this->scopeConfig->getValue(
+            'loki_checkout/module_overview/show_registered'
+        );
     }
 }

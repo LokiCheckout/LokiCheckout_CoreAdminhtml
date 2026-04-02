@@ -98,7 +98,7 @@ $showRegistered = $modulesViewModel->showRegistered();
                     <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
                         <code title="<?= $escaper->escapeHtml($module->getDate()) ?>">
                             <?php if ($module->isDevVersion()): ?>
-                                <?= $escaper->escapeHtml($modulesViewModel->shortenGitCommit($module->getGitInfo()->getCommit())) ?>
+                                <?= $escaper->escapeHtml($modulesViewModel->getGitText($module->getGitInfo())) ?>
                             <?php else: ?>
                                 <?= $escaper->escapeHtml($module->getComposerVersion()) ?>
                             <?php endif; ?>
