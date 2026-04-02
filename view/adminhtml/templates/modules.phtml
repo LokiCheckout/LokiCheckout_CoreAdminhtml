@@ -16,12 +16,12 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
 $modules = $modulesViewModel->getModules();
 $showRegistered = $modulesViewModel->showRegistered();
 ?>
-<div class="<?= $escaper->escapeHtml($css('admin__data-grid-header admin__data-grid-toolbar', '@todo')) ?>">
-    <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', '@todo')) ?>"></div>
-    <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', '@todo')) ?>"><?= $escaper->escapeHtml(__ ('%1 modules found', count($modules))) ?></div>
+<div class="<?= $escaper->escapeHtml($css('admin__data-grid-header admin__data-grid-toolbar', 'toolbar')) ?>">
+    <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', 'header-row')) ?>"></div>
+    <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', 'header-row')) ?>"><?= $escaper->escapeHtml(__ ('%1 modules found', count($modules))) ?></div>
 </div>
 
-<div class="<?= $escaper->escapeHtml($css('admin__data-grid-wrap', '@todo')) ?>">
+<div class="<?= $escaper->escapeHtml($css('admin__data-grid-wrap', 'grid')) ?>">
     <table class="<?= $escaper->escapeHtml($css('data-grid', '@todo')) ?>">
         <thead>
         <tr>
@@ -63,39 +63,39 @@ $showRegistered = $modulesViewModel->showRegistered();
         <?php foreach ($modules as $module): ?>
             <tr>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <a target="_new" href="https://loki-checkout.com/docs/04-modules/<?= $escaper->escapeHtml($module->getName()) ?>">
                             <?= $escaper->escapeHtml($module->getName()) ?>
                         </a>
                     </div>
                 </td>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <?php if ($module->isEnabled()): ?>
-                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-notice', '@todo')) ?>"><?= $escaper->escapeHtml(__('Enabled')) ?></span>
+                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-notice', 'status-notice')) ?>"><?= $escaper->escapeHtml(__('Enabled')) ?></span>
                         <?php else: ?>
-                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-error', '@todo')) ?>"><?= $escaper->escapeHtml(__('Disabled')) ?></span>
+                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-error', 'status-warning')) ?>"><?= $escaper->escapeHtml(__('Disabled')) ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
                 <?php if ($showRegistered): ?>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <?php if ($module->isLokiCheckoutRegistered()): ?>
-                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-notice', '@todo')) ?>"><?= $escaper->escapeHtml(__('Yes')) ?></span>
+                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-notice', 'status-notice')) ?>"><?= $escaper->escapeHtml(__('Yes')) ?></span>
                         <?php else: ?>
-                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-warning', '@todo')) ?>"><?= $escaper->escapeHtml(__('No')) ?></span>
+                            <span class="<?= $escaper->escapeHtml($css('module-status module-status-warning', 'status-warning')) ?>"><?= $escaper->escapeHtml(__('No')) ?></span>
                         <?php endif; ?>
                     </div>
                 </td>
                 <?php endif; ?>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <code><?= $escaper->escapeHtml($module->getComposerName()) ?></code>
                     </div>
                 </td>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <code title="<?= $escaper->escapeHtml($module->getDate()) ?>">
                             <?php if ($module->isDevVersion()): ?>
                                 <?= $escaper->escapeHtml($modulesViewModel->getGitText($module->getGitInfo())) ?>
@@ -106,10 +106,14 @@ $showRegistered = $modulesViewModel->showRegistered();
                     </div>
                 </td>
                 <td>
-                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <?php $cssClass = $modulesViewModel->getLatestModuleVersionClass($module); ?>
                         <span class="module-status module-status-<?= $escaper->escapeHtml($cssClass) ?>" title="<?= $escaper->escapeHtml($module->getLatestModuleDate()) ?>">
-                            <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
+                            <?php if ($module->isDevVersion()): ?>
+                                <?= $escaper->escapeHtml($modulesViewModel->shortenCommit($module->getLatestCommit())) ?>
+                            <?php else: ?>
+                                <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
+                            <?php endif; ?>
                         </span>
                     </div>
                 </td>

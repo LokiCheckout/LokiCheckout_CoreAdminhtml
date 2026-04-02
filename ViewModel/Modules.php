@@ -75,17 +75,15 @@ class Modules implements ArgumentInterface
 
     public function getLatestModuleVersionClass(Module $module): string
     {
-        /*if ($module->isDevVersion()) {
+        if ($module->isDevVersion()) {
             if ($module->getGitInfo()->getCommit() === $module->getLatestCommit()) {
                 return 'notice';
             }
 
             return 'warning';
-        }*/
+        }
 
-        if ($module->getComposerVersion() === $module->getLatestComposerVersion(
-            )
-        ) {
+        if ($module->getComposerVersion() === $module->getLatestComposerVersion()) {
             return 'notice';
         }
 
