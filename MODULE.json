@@ -35,10 +35,12 @@
     "components": [],
     "config": [
         {
-            "path": "loki_checkout\/module_overview\/show_registered",
+            "path": "loki_checkout/module_overview/show_registered",
             "label": "Module Overview > Show Registration",
-            "description": "Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app\/etc\/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc."
+            "description": "Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app/etc/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc."
         }
     ],
-    "tests": []
+    "tests": [],
+    "phpcs_severity": "9",
+    "phpstan_level": "4"
 }
