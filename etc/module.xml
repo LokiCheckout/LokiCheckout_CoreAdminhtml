@@ -3,6 +3,7 @@
     <module name="LokiCheckout_CoreAdminhtml">
         <sequence>
             <module name="LokiCheckout_Core"/>
+            <module name="Loki_CssUtils"/>
             <module name="Loki_Components"/>
             <module name="Magento_Backend"/>
             <module name="Magento_Config"/>
