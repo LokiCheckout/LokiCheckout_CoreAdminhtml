@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.12] - 08 April 2026
+### Fixed
+- Compare git commits in module version when working with dev-versions
+- Show commit with branch name
+
 ## [1.0.11] - 18 February 2026
 ### Fixed
 - Temporarily disable commit-versioning in Admin module listing
