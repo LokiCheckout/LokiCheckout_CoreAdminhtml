@@ -5,7 +5,7 @@
             <group id="module_overview" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Module Overview</label>
                 <field id="show_registered"
-                       translate="label"
+                       translate="label tooltip"
                        type="select"
                        sortOrder="1"
                        showInDefault="1"
