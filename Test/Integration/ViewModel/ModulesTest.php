@@ -19,7 +19,9 @@ class ModulesTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
+        /** @var ObjectManager $objectManager */
+        $objectManager = Bootstrap::getObjectManager();
+        $this->objectManager = $objectManager;
         $this->objectManager->addSharedInstance(new ComposerApiStub(), ComposerApi::class);
     }
 

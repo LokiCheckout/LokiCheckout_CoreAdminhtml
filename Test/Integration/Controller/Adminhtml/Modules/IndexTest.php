@@ -4,6 +4,7 @@ namespace LokiCheckout\CoreAdminhtml\Test\Integration\Controller\Adminhtml\Modul
 
 use LokiCheckout\Core\Util\Composer\ComposerApi;
 use LokiCheckout\CoreAdminhtml\Test\Integration\Stub\ComposerApiStub;
+use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\TestFramework\Fixture\AppArea;
 use Magento\TestFramework\Fixture\Config as ConfigFixture;
 use Magento\TestFramework\TestCase\AbstractBackendController;
@@ -32,8 +33,10 @@ class IndexTest extends AbstractBackendController
     {
         $this->dispatch($this->uri);
 
-        $this->assertSame(200, $this->getResponse()->getHttpResponseCode());
-        $body = $this->getResponse()->getBody();
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertSame(200, $response->getHttpResponseCode());
+        $body = (string)$response->getBody();
         $this->assertStringContainsString('LokiCheckout - Module Overview', $body);
         $this->assertMatchesRegularExpression('/\d+ modules found/', $body);
         $this->assertStringContainsString('LokiCheckout_CoreAdminhtml', $body);
@@ -46,6 +49,8 @@ class IndexTest extends AbstractBackendController
     {
         $this->dispatch($this->uri);
 
-        $this->assertStringContainsString('LokiCheckout registered', $this->getResponse()->getBody());
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertStringContainsString('LokiCheckout registered', (string)$response->getBody());
     }
 }

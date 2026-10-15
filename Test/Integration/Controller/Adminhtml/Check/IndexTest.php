@@ -2,6 +2,7 @@
 
 namespace LokiCheckout\CoreAdminhtml\Test\Integration\Controller\Adminhtml\Check;
 
+use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\TestFramework\Fixture\AppArea;
 use Magento\TestFramework\Fixture\Config as ConfigFixture;
 use Magento\TestFramework\TestCase\AbstractBackendController;
@@ -17,8 +18,10 @@ class IndexTest extends AbstractBackendController
     {
         $this->dispatch($this->uri);
 
-        $this->assertSame(200, $this->getResponse()->getHttpResponseCode());
-        $body = $this->getResponse()->getBody();
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertSame(200, $response->getHttpResponseCode());
+        $body = (string)$response->getBody();
         $this->assertStringContainsString('LokiCheckout - System Check', $body);
         $this->assertStringContainsString('loki-system-check', $body);
         $this->assertStringContainsString('Recommendation', $body);
@@ -34,9 +37,11 @@ class IndexTest extends AbstractBackendController
     {
         $this->dispatch($this->uri);
 
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
         $this->assertMatchesRegularExpression(
             '/system-check-error">\s*2\s*</',
-            $this->getResponse()->getBody()
+            (string)$response->getBody()
         );
     }
 
@@ -45,9 +50,11 @@ class IndexTest extends AbstractBackendController
     {
         $this->dispatch($this->uri);
 
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
         $this->assertMatchesRegularExpression(
             '/system-check-notice">\s*3\s*</',
-            $this->getResponse()->getBody()
+            (string)$response->getBody()
         );
     }
 }
