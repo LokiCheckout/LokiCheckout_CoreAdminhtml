@@ -24,9 +24,4 @@ class Index extends Action
         $resultPage->getConfig()->getTitle()->prepend(__('LokiCheckout - System Check'));
         return $resultPage;
     }
-
-    public function _isAllowed()
-    {
-        return true;
-    }
 }

@@ -3,8 +3,10 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="LokiCheckout_CoreAdminhtml::modules" title="LokiCheckout Module Overview" sortOrder="1"/>
-                <resource id="LokiCheckout_CoreAdminhtml::check" title="LokiCheckout System Check" sortOrder="1"/>
+                <resource id="LokiCheckout_CoreAdminhtml::index" title="LokiCheckout" sortOrder="1">
+                    <resource id="LokiCheckout_CoreAdminhtml::modules" title="LokiCheckout Module Overview" sortOrder="1"/>
+                    <resource id="LokiCheckout_CoreAdminhtml::check" title="LokiCheckout System Check" sortOrder="2"/>
+                </resource>
             </resource>
         </resources>
     </acl>
