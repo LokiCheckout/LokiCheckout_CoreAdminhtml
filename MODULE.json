@@ -40,7 +40,11 @@
             "description": "Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app/etc/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc."
         }
     ],
-    "tests": [],
+    "tests": {
+        "unit": 51,
+        "integration": 28,
+        "functional": 16
+    },
     "phpcs_severity": "9",
     "phpstan_level": "4",
     "module_name": "LokiCheckout_CoreAdminhtml",

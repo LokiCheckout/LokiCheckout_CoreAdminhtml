@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add parent ACL resource `LokiCheckout_CoreAdminhtml::index` used by the admin menu
 - Prevent duplicate check results when a system check is executed more than once
 
+### Added
+- Unit, integration and Playwright tests
+
 ## [1.0.12] - 08 April 2026
 ### Fixed
 - Compare git commits in module version when working with dev-versions
