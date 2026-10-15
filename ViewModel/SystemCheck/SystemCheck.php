@@ -8,16 +8,17 @@ use LokiCheckout\CoreAdminhtml\ValueObject\CheckResultCollectionFactory;
 
 abstract class SystemCheck implements SystemCheckInterface
 {
-    private readonly CheckResultCollection $checkResultCollection;
+    private CheckResultCollection $checkResultCollection;
 
     public function __construct(
-        CheckResultCollectionFactory $checkResultCollectionFactory,
+        private readonly CheckResultCollectionFactory $checkResultCollectionFactory,
     ) {
         $this->checkResultCollection = $checkResultCollectionFactory->create();
     }
 
     public function getCheckResultCollection(): CheckResultCollection
     {
+        $this->checkResultCollection = $this->checkResultCollectionFactory->create();
         $this->execute();
         return $this->checkResultCollection;
     }
