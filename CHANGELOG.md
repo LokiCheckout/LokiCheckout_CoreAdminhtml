@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compare module versions with `version_compare()` and show unknown versions as warning instead of error or notice
 - Fall back to the latest Composer version for dev-versions without a known latest commit
 - Include `LokiTheme_*` modules in the Module Overview and dependency checks
+- Evaluate configuration checks per store view instead of only on the default scope
 
 ### Added
 - Unit, integration and Playwright tests

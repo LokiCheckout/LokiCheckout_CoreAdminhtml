@@ -30,9 +30,9 @@ class IndexTest extends AbstractBackendController
         $this->assertStringContainsString('LokiCheckout_DevTools', $body);
     }
 
-    #[ConfigFixture('customer/address/street_lines', '2', 'default')]
-    #[ConfigFixture('general/store_information/merchant_vat_number', 'NL123456789B01', 'default')]
-    #[ConfigFixture('general/store_information/country_id', 'NL', 'default')]
+    #[ConfigFixture('customer/address/street_lines', '2', 'store', 'default')]
+    #[ConfigFixture('general/store_information/merchant_vat_number', 'NL123456789B01', 'store', 'default')]
+    #[ConfigFixture('general/store_information/country_id', 'NL', 'store', 'default')]
     public function testInvalidValueIsMarkedAsError(): void
     {
         $this->dispatch($this->uri);
@@ -45,7 +45,7 @@ class IndexTest extends AbstractBackendController
         );
     }
 
-    #[ConfigFixture('customer/address/street_lines', '3', 'default')]
+    #[ConfigFixture('customer/address/street_lines', '3', 'store', 'default')]
     public function testValidValueIsMarkedAsNotice(): void
     {
         $this->dispatch($this->uri);

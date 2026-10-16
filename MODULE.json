@@ -4,7 +4,8 @@
         "Loki_Components",
         "Loki_CssUtils",
         "Magento_Backend",
-        "Magento_Config"
+        "Magento_Config",
+        "Magento_Store"
     ],
     "modules": [
         "LokiCheckout_Core",

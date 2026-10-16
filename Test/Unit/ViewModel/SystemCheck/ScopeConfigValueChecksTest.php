@@ -12,6 +12,9 @@ use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\StoreCountryId;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlFactory;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 class ScopeConfigValueChecksTest extends TestCase
@@ -88,11 +91,78 @@ class ScopeConfigValueChecksTest extends TestCase
         $this->assertCount(1, $systemCheck->getCheckResultCollection()->get());
     }
 
-    private function createSystemCheck(string $className, string $configPath, mixed $configValue): ScopeConfigValue
+    public function testSingleResultWhenAllStoreViewsShareTheSameValue(): void
     {
+        $systemCheck = $this->createSystemCheck(
+            StoreCountryId::class,
+            'general/store_information/country_id',
+            '',
+            ['nl' => 'NL', 'en' => 'NL']
+        );
+
+        $checkResults = $systemCheck->getCheckResultCollection()->get();
+        $this->assertCount(1, $checkResults);
+        $this->assertSame('general/store_information/country_id', $checkResults[0]->getLabel());
+        $this->assertSame('NL', $checkResults[0]->getValue());
+        $this->assertTrue($checkResults[0]->isValid());
+    }
+
+    public function testResultPerStoreViewWhenValuesDiffer(): void
+    {
+        $systemCheck = $this->createSystemCheck(
+            StoreCountryId::class,
+            'general/store_information/country_id',
+            'NL',
+            ['nl' => 'NL', 'en' => '']
+        );
+
+        $checkResults = $systemCheck->getCheckResultCollection()->get();
+        $this->assertCount(2, $checkResults);
+        $this->assertSame('general/store_information/country_id (nl)', $checkResults[0]->getLabel());
+        $this->assertSame('NL', $checkResults[0]->getValue());
+        $this->assertTrue($checkResults[0]->isValid());
+        $this->assertSame('general/store_information/country_id (en)', $checkResults[1]->getLabel());
+        $this->assertSame('', $checkResults[1]->getValue());
+        $this->assertFalse($checkResults[1]->isValid());
+    }
+
+    /**
+     * @param array<string, mixed> $storeValues Config values indexed by store code
+     */
+    private function createSystemCheck(
+        string $className,
+        string $configPath,
+        mixed $configValue,
+        array $storeValues = []
+    ): ScopeConfigValue {
+        $stores = [];
+        $storeId = 1;
+        $storeValuesById = [];
+        foreach ($storeValues as $storeCode => $storeValue) {
+            $store = $this->createMock(StoreInterface::class);
+            $store->method('getId')->willReturn($storeId);
+            $store->method('getCode')->willReturn($storeCode);
+            $stores[] = $store;
+            $storeValuesById[$storeId] = $storeValue;
+            $storeId++;
+        }
+
+        $storeManager = $this->createMock(StoreManagerInterface::class);
+        $storeManager->method('getStores')->willReturn($stores);
+
         $scopeConfig = $this->createMock(ScopeConfigInterface::class);
         $scopeConfig->method('getValue')->willReturnCallback(
-            fn (string $path) => $path === $configPath ? $configValue : null
+            function (string $path, string $scopeType = 'default', $scopeCode = null) use ($configPath, $configValue, $storeValuesById) {
+                if ($path !== $configPath) {
+                    return null;
+                }
+
+                if ($scopeType === ScopeInterface::SCOPE_STORE) {
+                    return $storeValuesById[$scopeCode] ?? $configValue;
+                }
+
+                return $configValue;
+            }
         );
 
         $url = $this->createMock(UrlInterface::class);
@@ -107,6 +177,6 @@ class ScopeConfigValueChecksTest extends TestCase
         $checkResultCollectionFactory->method('create')
             ->willReturnCallback(fn () => new CheckResultCollection());
 
-        return new $className($scopeConfig, $urlFactory, $checkResultCollectionFactory);
+        return new $className($scopeConfig, $storeManager, $urlFactory, $checkResultCollectionFactory);
     }
 }
