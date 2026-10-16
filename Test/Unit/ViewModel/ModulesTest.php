@@ -22,8 +22,10 @@ class ModulesTest extends TestCase
             'Magento_Catalog' => ['name' => 'Magento_Catalog'],
             'LokiCheckout_Foo' => ['name' => 'LokiCheckout_Foo'],
             'Loki_Bar' => ['name' => 'Loki_Bar'],
+            'LokiTheme_LumaComponents' => ['name' => 'LokiTheme_LumaComponents'],
             'Vendor_Registered' => ['name' => 'Vendor_Registered'],
             'Vendor_Other' => ['name' => 'Vendor_Other'],
+            'Vendor_LokiCheckoutIntegration' => ['name' => 'Vendor_LokiCheckoutIntegration'],
         ]);
 
         $lokiCheckoutModules = $this->createMock(LokiCheckoutModules::class);
@@ -52,8 +54,11 @@ class ModulesTest extends TestCase
             $this->createMock(ScopeConfigInterface::class)
         );
 
-        $this->assertCount(3, $modules->getModules());
-        $this->assertSame(['LokiCheckout_Foo', 'Loki_Bar', 'Vendor_Registered'], $createdModuleNames);
+        $this->assertCount(4, $modules->getModules());
+        $this->assertSame(
+            ['LokiCheckout_Foo', 'Loki_Bar', 'LokiTheme_LumaComponents', 'Vendor_Registered'],
+            $createdModuleNames
+        );
     }
 
     /**

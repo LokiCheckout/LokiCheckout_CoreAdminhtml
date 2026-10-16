@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shorten git commits to their first 8 characters instead of their last 8
 - Compare module versions with `version_compare()` and show unknown versions as warning instead of error or notice
 - Fall back to the latest Composer version for dev-versions without a known latest commit
+- Include `LokiTheme_*` modules in the Module Overview and dependency checks
 
 ### Added
 - Unit, integration and Playwright tests

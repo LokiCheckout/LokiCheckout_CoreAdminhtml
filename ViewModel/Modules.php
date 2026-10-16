@@ -36,8 +36,7 @@ class Modules implements ArgumentInterface
             $isLokiCheckoutRegistered = $this->lokiCheckoutModules->hasModule(
                 $moduleName
             );
-            if (false === str_contains($moduleName, 'LokiCheckout_')
-                && false === str_contains($moduleName, 'Loki_')
+            if (false === str_starts_with($moduleName, 'Loki')
                 && false === $isLokiCheckoutRegistered
             ) {
                 continue;
