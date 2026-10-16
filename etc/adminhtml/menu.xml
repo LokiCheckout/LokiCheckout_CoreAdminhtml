@@ -5,6 +5,6 @@
 
         <add id="LokiCheckout_CoreAdminhtml::modules" title="Module Overview" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="10" parent="LokiCheckout_CoreAdminhtml::index" action="loki_checkout/modules/index/" resource="LokiCheckout_CoreAdminhtml::modules"/>
 
-        <add id="LokiCheckout_CoreAdminhtml::check" title="System Check" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="10" parent="LokiCheckout_CoreAdminhtml::index" action="loki_checkout/check/index/" resource="LokiCheckout_CoreAdminhtml::check"/>
+        <add id="LokiCheckout_CoreAdminhtml::check" title="System Check" translate="title" module="LokiCheckout_CoreAdminhtml" sortOrder="20" parent="LokiCheckout_CoreAdminhtml::index" action="loki_checkout/check/index/" resource="LokiCheckout_CoreAdminhtml::check"/>
     </menu>
 </config>

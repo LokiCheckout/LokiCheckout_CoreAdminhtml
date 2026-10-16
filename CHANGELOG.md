@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Include `LokiTheme_*` modules in the Module Overview and dependency checks
 - Evaluate configuration checks per store view instead of only on the default scope
 - Only allow setting "Show Registration" on the default scope, because it is only read from there
+- Give menu items a distinct sort order
 
 ### Added
 - Unit, integration and Playwright tests
