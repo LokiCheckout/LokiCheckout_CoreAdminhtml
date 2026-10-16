@@ -143,6 +143,11 @@ class ModulesTest extends TestCase
             'dev version outdated' => [true, 'abc', 'def', '', '', 'warning'],
             'release version up to date' => [false, '', '', '1.2.3', '1.2.3', 'notice'],
             'release version outdated' => [false, '', '', '1.2.3', '1.2.4', 'error'],
+            'release version newer than latest' => [false, '', '', '1.2.5', '1.2.4', 'notice'],
+            'release version with v-prefix' => [false, '', '', 'v1.2.3', '1.2.3', 'notice'],
+            'release version, latest unknown' => [false, '', '', '1.2.3', '', 'warning'],
+            'release version, both unknown' => [false, '', '', '', '', 'warning'],
+            'dev version, latest commit unknown' => [true, 'abc', '', '', '', 'warning'],
         ];
     }
 

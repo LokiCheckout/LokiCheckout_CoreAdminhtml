@@ -67,7 +67,7 @@ class Modules implements ArgumentInterface
 
         $latestComposerVersion = $module->getLatestComposerVersion();
         if (!empty($latestComposerVersion)) {
-            return $module->getLatestComposerVersion();
+            return $latestComposerVersion;
         }
 
         return 'unknown';
@@ -76,14 +76,21 @@ class Modules implements ArgumentInterface
     public function getLatestModuleVersionClass(Module $module): string
     {
         if ($module->isDevVersion()) {
-            if ($module->getGitInfo()->getCommit() === $module->getLatestCommit()) {
+            $latestCommit = $module->getLatestCommit();
+            if ($latestCommit !== '' && $module->getGitInfo()->getCommit() === $latestCommit) {
                 return 'notice';
             }
 
             return 'warning';
         }
 
-        if ($module->getComposerVersion() === $module->getLatestComposerVersion()) {
+        $composerVersion = ltrim($module->getComposerVersion(), 'vV');
+        $latestComposerVersion = ltrim($module->getLatestComposerVersion(), 'vV');
+        if ($composerVersion === '' || $latestComposerVersion === '') {
+            return 'warning';
+        }
+
+        if (version_compare($composerVersion, $latestComposerVersion, '>=')) {
             return 'notice';
         }
 
