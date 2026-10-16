@@ -64,7 +64,7 @@ $showRegistered = $modulesViewModel->showRegistered();
             <tr>
                 <td>
                     <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
-                        <a target="_new" href="https://loki-checkout.com/docs/04-modules/<?= $escaper->escapeHtml($module->getName()) ?>">
+                        <a target="_new" href="<?= $escaper->escapeUrl('https://loki-checkout.com/docs/04-modules/' . $module->getName()) ?>">
                             <?= $escaper->escapeHtml($module->getName()) ?>
                         </a>
                     </div>
@@ -109,11 +109,7 @@ $showRegistered = $modulesViewModel->showRegistered();
                     <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
                         <?php $cssClass = $modulesViewModel->getLatestModuleVersionClass($module); ?>
                         <span class="module-status module-status-<?= $escaper->escapeHtml($cssClass) ?>" title="<?= $escaper->escapeHtml($module->getLatestModuleDate()) ?>">
-                            <?php if ($module->isDevVersion()): ?>
-                                <?= $escaper->escapeHtml($modulesViewModel->shortenCommit($module->getLatestCommit())) ?>
-                            <?php else: ?>
-                                <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
-                            <?php endif; ?>
+                            <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
                         </span>
                     </div>
                 </td>
