@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add parent ACL resource `LokiCheckout_CoreAdminhtml::index` used by the admin menu
 - Prevent duplicate check results when a system check is executed more than once
 - Do not break the Module Overview when the Composer API is unreachable
+- Read git info from `.git/HEAD` (plus refs, packed refs and worktrees) instead of `.git/FETCH_HEAD`
 
 ### Added
 - Unit, integration and Playwright tests

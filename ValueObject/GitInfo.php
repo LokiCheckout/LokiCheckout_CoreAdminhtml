@@ -11,46 +11,132 @@ class GitInfo
 
     public function hasInfo(): bool
     {
-        return file_exists($this->getHeadFile());
+        return $this->getGitDir() !== '';
     }
 
     public function getBranch(): string
     {
-        $contents = $this->getHeadContents();
-        if (!preg_match('/branch \'([^\']+)\'/', $contents, $match)) {
+        $ref = $this->getHeadRef();
+        if (!str_starts_with($ref, 'refs/heads/')) {
             return '';
         }
 
-        return $match[1];
+        return substr($ref, strlen('refs/heads/'));
     }
 
     public function getCommit(): string
     {
         $contents = $this->getHeadContents();
-        if (!preg_match('/^([a-z0-9]+)\s/', $contents, $match)) {
+        if ($this->isCommit($contents)) {
+            return $contents;
+        }
+
+        $ref = $this->getHeadRef();
+        if ($ref === '') {
+            return '';
+        }
+
+        return $this->resolveRef($ref);
+    }
+
+    public function getHeadContents(): string
+    {
+        $gitDir = $this->getGitDir();
+        if ($gitDir === '') {
+            return '';
+        }
+
+        return trim((string)file_get_contents($gitDir . '/HEAD'));
+    }
+
+    private function getHeadRef(): string
+    {
+        if (!preg_match('/^ref:\s*(\S+)$/', $this->getHeadContents(), $match)) {
             return '';
         }
 
         return $match[1];
     }
 
-    public function getHeadContents(): string
+    private function resolveRef(string $ref): string
     {
-        $file = $this->getHeadFile();
-        if (false === file_exists($file)) {
+        $commonDir = $this->getCommonDir();
+
+        $refFile = $commonDir . '/' . $ref;
+        if (is_file($refFile)) {
+            $commit = trim((string)file_get_contents($refFile));
+            return $this->isCommit($commit) ? $commit : '';
+        }
+
+        $packedRefsFile = $commonDir . '/packed-refs';
+        if (!is_file($packedRefsFile)) {
             return '';
         }
 
-        return file_get_contents($file);
-    }
-
-    private function getHeadFile(): string
-    {
-        $path = $this->path;
-        if (file_exists($path . '/.git/FETCH_HEAD')) {
-            return $path . '/.git/FETCH_HEAD';
+        foreach (file($packedRefsFile, FILE_IGNORE_NEW_LINES) as $line) {
+            $parts = explode(' ', trim($line), 2);
+            if (count($parts) === 2 && $parts[1] === $ref && $this->isCommit($parts[0])) {
+                return $parts[0];
+            }
         }
 
-        return dirname($path) . '/.git/FETCH_HEAD';
+        return '';
+    }
+
+    private function getCommonDir(): string
+    {
+        $gitDir = $this->getGitDir();
+        $commonDirFile = $gitDir . '/commondir';
+        if (!is_file($commonDirFile)) {
+            return $gitDir;
+        }
+
+        $commonDir = trim((string)file_get_contents($commonDirFile));
+        if (!str_starts_with($commonDir, '/')) {
+            $commonDir = $gitDir . '/' . $commonDir;
+        }
+
+        return $commonDir;
+    }
+
+    private function getGitDir(): string
+    {
+        foreach ([$this->path, dirname($this->path)] as $path) {
+            $gitDir = $this->findGitDir($path);
+            if ($gitDir !== '') {
+                return $gitDir;
+            }
+        }
+
+        return '';
+    }
+
+    private function findGitDir(string $path): string
+    {
+        $git = $path . '/.git';
+        if (is_dir($git)) {
+            return is_file($git . '/HEAD') ? $git : '';
+        }
+
+        if (!is_file($git)) {
+            return '';
+        }
+
+        // Worktrees and submodules use a .git file pointing to the actual git directory
+        if (!preg_match('/^gitdir:\s*(.+)$/m', (string)file_get_contents($git), $match)) {
+            return '';
+        }
+
+        $gitDir = trim($match[1]);
+        if (!str_starts_with($gitDir, '/')) {
+            $gitDir = $path . '/' . $gitDir;
+        }
+
+        return is_file($gitDir . '/HEAD') ? $gitDir : '';
+    }
+
+    private function isCommit(string $value): bool
+    {
+        return (bool)preg_match('/^[0-9a-f]{40}([0-9a-f]{24})?$/', $value);
     }
 }
