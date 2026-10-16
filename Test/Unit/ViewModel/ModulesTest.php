@@ -68,7 +68,9 @@ class ModulesTest extends TestCase
     {
         return [
             ['0123456789abcdef0123456789abcdef01234567', '01234567'],
-            ['abcdef1234', 'cdef1234'],
+            ['91ec086c0485cbe4891f8dfdb2bc2570becb9122', '91ec086c'],
+            ['abcdef1234', 'abcdef12'],
+            ['abc', 'abc'],
             ['12345678', '12345678'],
             ['', ''],
         ];
@@ -77,10 +79,10 @@ class ModulesTest extends TestCase
     public function testGetGitText(): void
     {
         $gitInfo = $this->createMock(GitInfo::class);
-        $gitInfo->method('getCommit')->willReturn('0123456789abcdef0123456789abcdef01234567');
+        $gitInfo->method('getCommit')->willReturn('91ec086c0485cbe4891f8dfdb2bc2570becb9122');
         $gitInfo->method('getBranch')->willReturn('main');
 
-        $this->assertSame('01234567 (main)', $this->createModulesViewModel()->getGitText($gitInfo));
+        $this->assertSame('91ec086c (main)', $this->createModulesViewModel()->getGitText($gitInfo));
     }
 
     /**

@@ -97,7 +97,7 @@ class Modules implements ArgumentInterface
 
     public function shortenCommit(string $gitCommit): string
     {
-        return substr($gitCommit, strlen($gitCommit) - 8, 8);
+        return substr($gitCommit, 0, 8);
     }
 
     public function showRegistered(): bool

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent duplicate check results when a system check is executed more than once
 - Do not break the Module Overview when the Composer API is unreachable
 - Read git info from `.git/HEAD` (plus refs, packed refs and worktrees) instead of `.git/FETCH_HEAD`
+- Shorten git commits to their first 8 characters instead of their last 8
 
 ### Added
 - Unit, integration and Playwright tests
