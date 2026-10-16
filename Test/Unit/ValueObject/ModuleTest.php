@@ -55,6 +55,21 @@ class ModuleTest extends TestCase
         $this->assertFalse($module->isDevVersion());
     }
 
+    public function testComposerApiFailuresDoNotBreakModule(): void
+    {
+        $exception = new \RuntimeException('cURL error 6: Could not resolve host: composer.yireo.com');
+        $composerApi = $this->createMock(ComposerApi::class);
+        $composerApi->method('getLatestCommit')->willThrowException($exception);
+        $composerApi->method('getAvailableVersion')->willThrowException($exception);
+        $composerApi->method('getAvailableVersionDate')->willThrowException($exception);
+
+        $module = $this->createModule(composerApi: $composerApi);
+
+        $this->assertSame('', $module->getLatestCommit());
+        $this->assertSame('', $module->getLatestComposerVersion());
+        $this->assertSame('', $module->getLatestModuleDate());
+    }
+
     private function createModule(
         ?ModuleManager $moduleManager = null,
         ?LokiCheckoutModules $lokiCheckoutModules = null,

@@ -7,6 +7,7 @@ use Magento\Framework\Module\Manager as ModuleManager;
 use LokiCheckout\Core\Config\LokiCheckoutModules;
 use LokiCheckout\Core\Util\Composer\ComposerApi;
 use LokiCheckout\Core\Util\Composer\ComposerPackage;
+use Throwable;
 
 class Module
 {
@@ -48,12 +49,12 @@ class Module
 
     public function getLatestCommit(): string
     {
-        return $this->composerApi->getLatestCommit($this->composerPackage->getComposerName());
+        return $this->callComposerApi(fn (string $name) => $this->composerApi->getLatestCommit($name));
     }
 
     public function getLatestComposerVersion(): string
     {
-        return $this->composerApi->getAvailableVersion($this->composerPackage->getComposerName());
+        return $this->callComposerApi(fn (string $name) => $this->composerApi->getAvailableVersion($name));
     }
 
     public function getModulePath(): string
@@ -80,6 +81,21 @@ class Module
 
     public function getLatestModuleDate(): string
     {
-        return $this->composerApi->getAvailableVersionDate($this->composerPackage->getComposerName());
+        return $this->callComposerApi(fn (string $name) => $this->composerApi->getAvailableVersionDate($name));
+    }
+
+    private function callComposerApi(callable $callback): string
+    {
+        $composerName = $this->composerPackage->getComposerName();
+        if ($composerName === '') {
+            return '';
+        }
+
+        // The remote Composer API might be unreachable, which should not break the overview
+        try {
+            return (string)$callback($composerName);
+        } catch (Throwable) {
+            return '';
+        }
     }
 }
