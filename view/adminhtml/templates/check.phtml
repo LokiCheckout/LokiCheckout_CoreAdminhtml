@@ -7,7 +7,7 @@ use Magento\Framework\Escaper;
 use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheckCollection;
 use Loki\Components\Factory\ViewModelFactory;
 
-/** @version 1.0.12 */
+/** @version 1.0.13 */
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelFactory $viewModelFactory */
@@ -41,7 +41,7 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
         <tbody>
         <?php foreach ($systemCheckCollection->getSystemChecks() as $systemCheck): ?>
             <?php foreach ($systemCheck->getCheckResultCollection()->get() as $checkResult): ?>
-                <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : 'error'; ?>
+                <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : ($checkResult->isWarning() ? 'warning' : 'error'); ?>
                 <tr>
                     <td>
                         <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'label')) ?>">

@@ -29,7 +29,8 @@ abstract class SystemCheck implements SystemCheckInterface
         string $label,
         mixed $value,
         bool $valid,
-        string $recommendation
+        string $recommendation,
+        bool $warning = false
     ): void {
         $this->checkResultCollection->add(
             new CheckResult(
@@ -38,6 +39,7 @@ abstract class SystemCheck implements SystemCheckInterface
                 $valid,
                 $recommendation,
                 $this->getUrl(),
+                $warning,
             )
         );
     }

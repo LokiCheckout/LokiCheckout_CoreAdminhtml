@@ -26,7 +26,13 @@ abstract class ScopeConfigValue extends SystemCheck
 
         if (empty($values) || $this->hasIdenticalValues($values)) {
             $value = empty($values) ? $this->scopeConfig->getValue($path) : reset($values);
-            $this->addCheckResult($path, $value, $this->isValid($value), $this->getRecommendation());
+            $this->addCheckResult(
+                $path,
+                $value,
+                $this->isValid($value),
+                $this->getRecommendation(),
+                $this->isWarning()
+            );
             return;
         }
 
@@ -35,7 +41,8 @@ abstract class ScopeConfigValue extends SystemCheck
                 $path . ' (' . $storeCode . ')',
                 $value,
                 $this->isValid($value),
-                $this->getRecommendation()
+                $this->getRecommendation(),
+                $this->isWarning()
             );
         }
     }
@@ -43,6 +50,11 @@ abstract class ScopeConfigValue extends SystemCheck
     protected function isValid($value): bool
     {
         return true;
+    }
+
+    protected function isWarning(): bool
+    {
+        return false;
     }
 
     abstract protected function getScopeConfigPath(): string;

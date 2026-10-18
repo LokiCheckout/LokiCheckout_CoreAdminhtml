@@ -25,5 +25,20 @@ class CheckResultTest extends TestCase
         $this->assertNull($checkResult->getValue());
         $this->assertFalse($checkResult->isValid());
         $this->assertNull($checkResult->getUrl());
+        $this->assertFalse($checkResult->isWarning());
+    }
+
+    public function testInvalidWarningIsWarning(): void
+    {
+        $checkResult = new CheckResult('Label', 'Value', false, 'Recommendation', null, true);
+
+        $this->assertTrue($checkResult->isWarning());
+    }
+
+    public function testValidWarningIsNotWarning(): void
+    {
+        $checkResult = new CheckResult('Label', 'Value', true, 'Recommendation', null, true);
+
+        $this->assertFalse($checkResult->isWarning());
     }
 }

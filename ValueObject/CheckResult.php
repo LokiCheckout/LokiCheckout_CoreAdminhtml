@@ -10,6 +10,7 @@ class CheckResult
         private readonly bool $valid,
         private readonly string $recommendation,
         private readonly string|null $url = null,
+        private readonly bool $warning = false,
     ) {
     }
 
@@ -36,5 +37,10 @@ class CheckResult
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    public function isWarning(): bool
+    {
+        return !$this->valid && $this->warning;
     }
 }
