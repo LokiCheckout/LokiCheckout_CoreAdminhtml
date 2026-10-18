@@ -9,8 +9,19 @@ class CspMode extends ScopeConfigValue
         return 'csp/mode/storefront_checkout_index_index/report_only';
     }
 
+    protected function isValid($value): bool
+    {
+        return (string)$value !== '1';
+    }
+
+    protected function isWarning(): bool
+    {
+        return true;
+    }
+
     protected function getRecommendation(): string
     {
-        return 'CSP Strict Mode can only be enabled if your theme and other extensions allow for it';
+        return 'For PCI DSS 4.0 compliance, use CSP Strict Mode (report_only = 0) on the checkout. '
+            . 'Make sure your theme and extensions are compatible first.';
     }
 }

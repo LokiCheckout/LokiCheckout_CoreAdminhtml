@@ -102,12 +102,22 @@ class ScopeConfigValueTest extends TestCase
     }
 
     #[ConfigFixture('csp/mode/storefront_checkout_index_index/report_only', '1', 'store', 'default')]
-    public function testCspMode(): void
+    public function testCspModeReportOnlyIsWarning(): void
     {
         $checkResult = $this->getCheckResult(CspMode::class);
         $this->assertSame('csp/mode/storefront_checkout_index_index/report_only', $checkResult->getLabel());
         $this->assertSame('1', (string)$checkResult->getValue());
+        $this->assertFalse($checkResult->isValid());
+        $this->assertTrue($checkResult->isWarning());
+    }
+
+    #[ConfigFixture('csp/mode/storefront_checkout_index_index/report_only', '0', 'store', 'default')]
+    public function testCspModeStrictIsValid(): void
+    {
+        $checkResult = $this->getCheckResult(CspMode::class);
+        $this->assertSame('0', (string)$checkResult->getValue());
         $this->assertTrue($checkResult->isValid());
+        $this->assertFalse($checkResult->isWarning());
     }
 
     protected function tearDown(): void

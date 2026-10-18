@@ -51,8 +51,31 @@ class ScopeConfigValueChecksTest extends TestCase
             'merchant vat set' => [MerchantVatNumber::class, 'general/store_information/merchant_vat_number', 'NL123456789B01', true, 'VAT number'],
             'store country empty' => [StoreCountryId::class, 'general/store_information/country_id', '', false, 'country'],
             'store country set' => [StoreCountryId::class, 'general/store_information/country_id', 'NL', true, 'country'],
-            'csp report only' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', '1', true, 'CSP Strict Mode'],
+            'csp report only' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', '1', false, 'CSP Strict Mode'],
             'csp strict' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', '0', true, 'CSP Strict Mode'],
+            'csp empty' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', null, true, 'CSP Strict Mode'],
+        ];
+    }
+
+    /**
+     * @dataProvider getWarningValues
+     */
+    public function testWarning(string $className, string $configPath, mixed $configValue, bool $expectedWarning): void
+    {
+        $systemCheck = $this->createSystemCheck($className, $configPath, $configValue);
+        $checkResult = $systemCheck->getCheckResultCollection()->get()[0];
+
+        $this->assertSame($expectedWarning, $checkResult->isWarning());
+    }
+
+    public static function getWarningValues(): array
+    {
+        return [
+            'csp report only' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', '1', true],
+            'csp strict' => [CspMode::class, 'csp/mode/storefront_checkout_index_index/report_only', '0', false],
+            'address lines 2' => [AddressLines::class, 'customer/address/street_lines', '2', false],
+            'merchant vat empty' => [MerchantVatNumber::class, 'general/store_information/merchant_vat_number', '', false],
+            'store country empty' => [StoreCountryId::class, 'general/store_information/country_id', '', false],
         ];
     }
 

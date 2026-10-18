@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Read git info from `.git/HEAD` (plus refs, packed refs and worktrees) instead of `.git/FETCH_HEAD`
 - Shorten git commits to their first 8 characters instead of their last 8
 - Compare module versions with `version_compare()` and show unknown versions as warning instead of error or notice
+- Show the CSP check as a warning when the checkout is in CSP report-only mode instead of always passing
 - Fall back to the latest Composer version for dev-versions without a known latest commit
 - Include `LokiTheme_*` modules in the Module Overview and dependency checks
 - Evaluate configuration checks per store view instead of only on the default scope
