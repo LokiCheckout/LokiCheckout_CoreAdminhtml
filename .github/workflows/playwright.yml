@@ -39,7 +39,7 @@ jobs:
       OPENSEARCH_PORT: "9200"
       OPENSEARCH_JAVA_OPTS: "-Xms128m -Xmx128m"
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: "admin"
-      MAGENTO_VERSION: ${{ vars.MAGENTO_VERSION || '2.4.8-p3' }}
+      MAGENTO_VERSION: ${{ vars.MAGENTO_VERSION || '2.4.8-p5' }}
       DISABLE_INVENTORY: ${{ vars.DISABLE_INVENTORY || false }}
       DISABLE_GRAPHQL: ${{ vars.DISABLE_GRAPHQL || false }}
       DISABLE_ADOBE: ${{ vars.DISABLE_ADOBE || false }}
@@ -79,7 +79,7 @@ jobs:
           OPENSEARCH_PORT: "9200"
           OPENSEARCH_JAVA_OPTS: "-Xms128m -Xmx128m"
           OPENSEARCH_INITIAL_ADMIN_PASSWORD: "admin"
-          MAGENTO_VERSION: ${{ vars.MAGENTO_VERSION || '2.4.8-p3' }}
+          MAGENTO_VERSION: ${{ vars.MAGENTO_VERSION || '2.4.8-p5' }}
           DISABLE_INVENTORY: ${{ vars.DISABLE_INVENTORY || false }}
           DISABLE_GRAPHQL: ${{ vars.DISABLE_GRAPHQL || false }}
           DISABLE_ADOBE: ${{ vars.DISABLE_ADOBE || false }}
