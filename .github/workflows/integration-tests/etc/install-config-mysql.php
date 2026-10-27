@@ -1,5 +1,4 @@
 <?php // phpcs:ignoreFile
-declare(strict_types=1);
 
 use Yireo\IntegrationTestHelper\Utilities\DisableModules;
 use Yireo\IntegrationTestHelper\Utilities\InstallConfig;
