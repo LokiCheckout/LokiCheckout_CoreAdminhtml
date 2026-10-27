@@ -46,7 +46,7 @@ class GitInfo
             return '';
         }
 
-        return trim((string)file_get_contents($gitDir . '/HEAD'));
+        return trim((string)file_get_contents($gitDir . '/HEAD'), " \f\n\r\t\v\x00");
     }
 
     private function getHeadRef(): string
@@ -64,7 +64,7 @@ class GitInfo
 
         $refFile = $commonDir . '/' . $ref;
         if (is_file($refFile)) {
-            $commit = trim((string)file_get_contents($refFile));
+            $commit = trim((string)file_get_contents($refFile), " \f\n\r\t\v\x00");
             return $this->isCommit($commit) ? $commit : '';
         }
 
@@ -74,7 +74,7 @@ class GitInfo
         }
 
         foreach (file($packedRefsFile, FILE_IGNORE_NEW_LINES) as $line) {
-            $parts = explode(' ', trim($line), 2);
+            $parts = explode(' ', trim($line, " \f\n\r\t\v\x00"), 2);
             if (count($parts) === 2 && $parts[1] === $ref && $this->isCommit($parts[0])) {
                 return $parts[0];
             }
@@ -91,7 +91,7 @@ class GitInfo
             return $gitDir;
         }
 
-        $commonDir = trim((string)file_get_contents($commonDirFile));
+        $commonDir = trim((string)file_get_contents($commonDirFile), " \f\n\r\t\v\x00");
         if (!str_starts_with($commonDir, '/')) {
             $commonDir = $gitDir . '/' . $commonDir;
         }
@@ -127,7 +127,7 @@ class GitInfo
             return '';
         }
 
-        $gitDir = trim($match[1]);
+        $gitDir = trim($match[1], " \f\n\r\t\v\x00");
         if (!str_starts_with($gitDir, '/')) {
             $gitDir = $path . '/' . $gitDir;
         }
