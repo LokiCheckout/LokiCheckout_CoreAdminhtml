@@ -276,6 +276,7 @@ jobs:
             set -e
             cd /tmp/magento
             GITHUB_WORKSPACE=/tmp/magento/package-source /tmp/magento/package-source/.github/workflows/magento-install.sh
+            bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
             bin/magento module:enable Yireo_EnableModuleSequence
             bin/magento module:enable Hyva_Theme Hyva_BaseLayoutReset Hyva_Email Hyva_GraphqlTokens Hyva_GraphqlViewModel Hyva_OrderCancellationWebapi Hyva_CompatModuleFallback
             EXTRA_MODULES=""
@@ -285,7 +286,7 @@ jobs:
             bin/magento module:sequence Loki_FunctionalTests ${EXTRA_MODULES} ${MAGENTO_MODULE}
             bin/magento setup:upgrade
             bin/magento config:set dev/static/sign 0
-            bin/magento setup:static-content:deploy -f --area frontend en_US
+            bin/magento setup:static-content:deploy -f --area frontend --area adminhtml en_US
             bin/magento loki:functional-tests:modules:dump
             bin/magento config:set loki/functional_tests/token loki
             bin/magento cache:flush config
