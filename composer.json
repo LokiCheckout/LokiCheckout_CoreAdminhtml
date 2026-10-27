@@ -31,6 +31,7 @@
         "loki-checkout-category-core"
     ],
     "require-dev": {
+        "phpunit/phpunit": "^10.5",
         "yireo/magento2-integration-test-helper": "~0.0",
         "loki/magento2-functional-tests": "@dev",
         "loki-checkout/magento2-functional-tests": "@dev"
