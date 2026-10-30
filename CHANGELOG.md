@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.13] - 30 October 2026
+### Added
+- Add warning state to check results
+
 ### Fixed
 - Respect ACL resources in admin controllers instead of always allowing access
 - Add parent ACL resource `LokiCheckout_CoreAdminhtml::index` used by the admin menu
@@ -19,9 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Evaluate configuration checks per store view instead of only on the default scope
 - Only allow setting "Show Registration" on the default scope, because it is only read from there
 - Give menu items a distinct sort order
-
-### Added
-- Unit, integration and Playwright tests
 
 ## [1.0.12] - 08 April 2026
 ### Fixed
