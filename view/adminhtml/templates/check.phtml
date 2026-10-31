@@ -39,33 +39,31 @@ $systemCheckCollection = $viewModelFactory->create(SystemCheckCollection::class)
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($systemCheckCollection->getSystemChecks() as $systemCheck): ?>
-            <?php foreach ($systemCheck->getCheckResultCollection()->get() as $checkResult): ?>
-                <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : ($checkResult->isWarning() ? 'warning' : 'error'); ?>
-                <tr>
-                    <td>
-                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'label')) ?>">
-                            <?php if ($checkResult->getUrl()): ?>
-                            <a href="<?= $escaper->escapeUrl($checkResult->getUrl()) ?>">
-                            <?php endif; ?>
-                            <?= $escaper->escapeHtml($checkResult->getLabel()) ?>
-                            <?php if ($checkResult->getUrl()): ?>
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content system-check', 'value')) ?> system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
-                            <?= $escaper->escapeHtml($checkResult->getValue()) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'recommendation')) ?>">
-                            <?= $escaper->escapeHtml($checkResult->getRecommendation()) ?>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
+        <?php foreach ($systemCheckCollection->getCheckResults() as $checkResult): ?>
+            <?php $valueClassSuffix = $checkResult->isValid() ? 'notice' : ($checkResult->isWarning() ? 'warning' : 'error'); ?>
+            <tr>
+                <td>
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'label')) ?>">
+                        <?php if ($checkResult->getUrl()): ?>
+                        <a href="<?= $escaper->escapeUrl($checkResult->getUrl()) ?>">
+                        <?php endif; ?>
+                        <?= $escaper->escapeHtml($checkResult->getLabel()) ?>
+                        <?php if ($checkResult->getUrl()): ?>
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content system-check', 'value')) ?> system-check-<?= $escaper->escapeHtml($valueClassSuffix) ?>">
+                        <?= $escaper->escapeHtml($checkResult->getValue()) ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'recommendation')) ?>">
+                        <?= $escaper->escapeHtml($checkResult->getRecommendation()) ?>
+                    </div>
+                </td>
+            </tr>
         <?php endforeach; ?>
         </tbody>
     </table>

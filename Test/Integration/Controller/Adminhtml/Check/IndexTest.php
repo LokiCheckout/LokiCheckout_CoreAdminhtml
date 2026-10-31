@@ -2,7 +2,11 @@
 
 namespace LokiCheckout\CoreAdminhtml\Test\Integration\Controller\Adminhtml\Check;
 
+use LokiCheckout\CoreAdminhtml\Test\Integration\Stub\FailingSystemCheckStub;
+use LokiCheckout\CoreAdminhtml\Test\Integration\Stub\SystemCheckCollectionWithFailingCheck;
+use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheckCollection;
 use Magento\Framework\App\Response\Http as HttpResponse;
+use Magento\TestFramework\Fixture\AppIsolation;
 use Magento\TestFramework\Fixture\AppArea;
 use Magento\TestFramework\Fixture\Config as ConfigFixture;
 use Magento\TestFramework\TestCase\AbstractBackendController;
@@ -56,5 +60,24 @@ class IndexTest extends AbstractBackendController
             '/system-check-notice">\s*3\s*</',
             (string)$response->getBody()
         );
+    }
+
+    #[AppIsolation(true)]
+    public function testFailingSystemCheckIsShownAsError(): void
+    {
+        $this->_objectManager->configure([
+            'preferences' => [SystemCheckCollection::class => SystemCheckCollectionWithFailingCheck::class],
+        ]);
+
+        $this->dispatch($this->uri);
+
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertSame(200, $response->getHttpResponseCode());
+        $body = (string)$response->getBody();
+        $this->assertMatchesRegularExpression('/failing_check\s*<\/div>/', $body);
+        $this->assertMatchesRegularExpression('/system-check-error">\s*Error\s*</', $body);
+        $this->assertStringContainsString(FailingSystemCheckStub::MESSAGE, $body);
+        $this->assertStringContainsString('customer/address/street_lines', $body);
     }
 }
