@@ -24,6 +24,7 @@ const config = merge(coreConfig, {
         'general/store_information/country_id': 'NL',
         'general/store_information/merchant_vat_number': 'NL123456789B01',
         'loki_checkout/module_overview/show_registered': 0,
+        'csp/mode/storefront_checkout_index_index/report_only': 0,
     }
 });
 
@@ -32,6 +33,12 @@ export const invalidConfig = merge(config, {
     config: {
         'general/store_information/country_id': '',
         'general/store_information/merchant_vat_number': '',
+    }
+});
+
+export const cspReportOnlyConfig = merge(config, {
+    config: {
+        'csp/mode/storefront_checkout_index_index/report_only': 1,
     }
 });
 

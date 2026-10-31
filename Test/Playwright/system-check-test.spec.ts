@@ -1,5 +1,5 @@
 import {test, expect} from '@loki/test';
-import config, {invalidConfig, themes, withTheme} from './config/config';
+import config, {cspReportOnlyConfig, invalidConfig, themes, withTheme} from './config/config';
 import {AdminLogin, SystemCheckPage, configureWithTheme} from './helpers/admin-objects';
 
 test.describe('LokiCheckout_CoreAdminhtml system check', () => {
@@ -70,6 +70,25 @@ test.describe('LokiCheckout_CoreAdminhtml system check', () => {
 
             const streetLines = systemCheckPage.getValue('customer/address/street_lines');
             await expect(streetLines).toHaveClass(/system-check-notice/);
+        });
+
+        test(`marks CSP report-only mode as warning (${theme.name})`, async ({page}) => {
+            const label = 'csp/mode/storefront_checkout_index_index/report_only';
+
+            await configureWithTheme(page, withTheme(cspReportOnlyConfig, theme));
+            await new AdminLogin(page).login();
+
+            const systemCheckPage = new SystemCheckPage(page);
+            await systemCheckPage.open();
+
+            await expect(systemCheckPage.getValue(label)).toHaveText('1');
+            await expect(systemCheckPage.getValue(label)).toHaveClass(/system-check-warning/);
+            await expect(systemCheckPage.getRow(label)).toContainText('CSP Strict Mode');
+
+            await configureWithTheme(page, withTheme(config, theme));
+            await systemCheckPage.open();
+            await expect(systemCheckPage.getValue(label)).toHaveText('0');
+            await expect(systemCheckPage.getValue(label)).toHaveClass(/system-check-notice/);
         });
 
         test(`links address lines to the customer configuration (${theme.name})`, async ({page}) => {

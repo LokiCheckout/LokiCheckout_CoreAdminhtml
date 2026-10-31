@@ -112,6 +112,47 @@ class GitInfoTest extends TestCase
         $this->assertSame('feature/y', $gitInfo->getBranch());
     }
 
+    public function testGitFileWithRelativeGitDir(): void
+    {
+        $submoduleGitDir = $this->tempDir . '/.git/modules/module';
+        mkdir($submoduleGitDir . '/refs/heads', 0777, true);
+        file_put_contents($submoduleGitDir . '/HEAD', "ref: refs/heads/main\n");
+        file_put_contents($submoduleGitDir . '/refs/heads/main', self::COMMIT . "\n");
+        file_put_contents($this->tempDir . '/module/.git', "gitdir: ../.git/modules/module\n");
+
+        $gitInfo = new GitInfo($this->tempDir . '/module');
+
+        $this->assertTrue($gitInfo->hasInfo());
+        $this->assertSame(self::COMMIT, $gitInfo->getCommit());
+        $this->assertSame('main', $gitInfo->getBranch());
+    }
+
+    public function testWorktreeWithAbsoluteCommonDir(): void
+    {
+        $commonDir = $this->tempDir . '/common';
+        $worktreeGitDir = $this->tempDir . '/worktree-git';
+        mkdir($commonDir . '/refs/heads', 0777, true);
+        mkdir($worktreeGitDir, 0777, true);
+        file_put_contents($commonDir . '/refs/heads/main', self::OTHER_COMMIT . "\n");
+        file_put_contents($worktreeGitDir . '/HEAD', "ref: refs/heads/main\n");
+        file_put_contents($worktreeGitDir . '/commondir', $commonDir . "\n");
+        file_put_contents($this->tempDir . '/module/.git', 'gitdir: ' . $worktreeGitDir . "\n");
+
+        $gitInfo = new GitInfo($this->tempDir . '/module');
+
+        $this->assertSame(self::OTHER_COMMIT, $gitInfo->getCommit());
+    }
+
+    public function testGitFilePointingToMissingDirectory(): void
+    {
+        file_put_contents($this->tempDir . '/module/.git', "gitdir: /does/not/exist\n");
+
+        $gitInfo = new GitInfo($this->tempDir . '/module');
+
+        $this->assertFalse($gitInfo->hasInfo());
+        $this->assertSame('', $gitInfo->getCommit());
+    }
+
     public function testWithUnparsableHead(): void
     {
         $this->writeGitFile($this->tempDir . '/module', 'HEAD', 'NOT A VALID HEAD');
