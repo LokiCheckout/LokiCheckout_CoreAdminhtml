@@ -17,15 +17,15 @@ class ModuleTest extends TestCase
     public function testGetters(): void
     {
         $moduleManager = $this->createMock(ModuleManager::class);
-        $moduleManager->method('isEnabled')->with('LokiCheckout_Foo')->willReturn(true);
+        $moduleManager->expects($this->any())->method('isEnabled')->with('LokiCheckout_Foo')->willReturn(true);
 
         $lokiCheckoutModules = $this->createMock(LokiCheckoutModules::class);
-        $lokiCheckoutModules->method('hasModule')->with('LokiCheckout_Foo')->willReturn(true);
+        $lokiCheckoutModules->expects($this->any())->method('hasModule')->with('LokiCheckout_Foo')->willReturn(true);
 
         $composerApi = $this->createMock(ComposerApi::class);
-        $composerApi->method('getLatestCommit')->with('loki-checkout/foo')->willReturn('latest-commit');
-        $composerApi->method('getAvailableVersion')->with('loki-checkout/foo')->willReturn('1.2.4');
-        $composerApi->method('getAvailableVersionDate')->with('loki-checkout/foo')->willReturn('2026-01-02 03:04:05');
+        $composerApi->expects($this->any())->method('getLatestCommit')->with('loki-checkout/foo')->willReturn('latest-commit');
+        $composerApi->expects($this->any())->method('getAvailableVersion')->with('loki-checkout/foo')->willReturn('1.2.4');
+        $composerApi->expects($this->any())->method('getAvailableVersionDate')->with('loki-checkout/foo')->willReturn('2026-01-02 03:04:05');
 
         $module = $this->createModule($moduleManager, $lokiCheckoutModules, $composerApi);
 
@@ -43,13 +43,13 @@ class ModuleTest extends TestCase
 
     public function testDevVersionFollowsGitInfo(): void
     {
-        $gitInfo = $this->createMock(GitInfo::class);
+        $gitInfo = $this->createStub(GitInfo::class);
         $gitInfo->method('hasInfo')->willReturn(true);
         $module = $this->createModule(gitInfo: $gitInfo);
         $this->assertTrue($module->isDevVersion());
         $this->assertSame($gitInfo, $module->getGitInfo());
 
-        $gitInfo = $this->createMock(GitInfo::class);
+        $gitInfo = $this->createStub(GitInfo::class);
         $gitInfo->method('hasInfo')->willReturn(false);
         $module = $this->createModule(gitInfo: $gitInfo);
         $this->assertFalse($module->isDevVersion());
@@ -58,7 +58,7 @@ class ModuleTest extends TestCase
     public function testComposerApiFailuresDoNotBreakModule(): void
     {
         $exception = new \RuntimeException('cURL error 6: Could not resolve host: composer.yireo.com');
-        $composerApi = $this->createMock(ComposerApi::class);
+        $composerApi = $this->createStub(ComposerApi::class);
         $composerApi->method('getLatestCommit')->willThrowException($exception);
         $composerApi->method('getAvailableVersion')->willThrowException($exception);
         $composerApi->method('getAvailableVersionDate')->willThrowException($exception);
@@ -77,21 +77,21 @@ class ModuleTest extends TestCase
         ?GitInfo $gitInfo = null,
     ): Module {
         $componentRegistrar = $this->createMock(ComponentRegistrar::class);
-        $componentRegistrar->method('getPath')
+        $componentRegistrar->expects($this->any())->method('getPath')
             ->with(ComponentRegistrar::MODULE, 'LokiCheckout_Foo')
             ->willReturn('/path/to/module');
 
         $gitInfoFactory = $this->createMock(GitInfoFactory::class);
-        $gitInfoFactory->method('create')
+        $gitInfoFactory->expects($this->any())->method('create')
             ->with(['path' => '/path/to/module'])
-            ->willReturn($gitInfo ?? $this->createMock(GitInfo::class));
+            ->willReturn($gitInfo ?? $this->createStub(GitInfo::class));
 
         return new Module(
             $componentRegistrar,
-            $moduleManager ?? $this->createMock(ModuleManager::class),
-            $lokiCheckoutModules ?? $this->createMock(LokiCheckoutModules::class),
+            $moduleManager ?? $this->createStub(ModuleManager::class),
+            $lokiCheckoutModules ?? $this->createStub(LokiCheckoutModules::class),
             $gitInfoFactory,
-            $composerApi ?? $this->createMock(ComposerApi::class),
+            $composerApi ?? $this->createStub(ComposerApi::class),
             'LokiCheckout_Foo',
             new ComposerPackage('LokiCheckout_Foo', 'loki-checkout/foo', '1.2.3', '2026-01-01'),
         );

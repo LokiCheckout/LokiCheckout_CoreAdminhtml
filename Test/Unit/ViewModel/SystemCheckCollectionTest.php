@@ -16,8 +16,8 @@ class SystemCheckCollectionTest extends TestCase
     public function testReturnsInjectedSystemChecks(): void
     {
         $systemChecks = [
-            'foo' => $this->createMock(SystemCheckInterface::class),
-            'bar' => $this->createMock(SystemCheckInterface::class),
+            'foo' => $this->createStub(SystemCheckInterface::class),
+            'bar' => $this->createStub(SystemCheckInterface::class),
         ];
 
         $this->assertSame($systemChecks, (new SystemCheckCollection($systemChecks))->getSystemChecks());

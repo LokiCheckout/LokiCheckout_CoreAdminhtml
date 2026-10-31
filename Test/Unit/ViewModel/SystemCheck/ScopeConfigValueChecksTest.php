@@ -15,13 +15,12 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ScopeConfigValueChecksTest extends TestCase
 {
-    /**
-     * @dataProvider getTestValues
-     */
+    #[DataProvider('getTestValues')]
     public function testCheckResult(
         string $className,
         string $configPath,
@@ -57,9 +56,7 @@ class ScopeConfigValueChecksTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getWarningValues
-     */
+    #[DataProvider('getWarningValues')]
     public function testWarning(string $className, string $configPath, mixed $configValue, bool $expectedWarning): void
     {
         $systemCheck = $this->createSystemCheck($className, $configPath, $configValue);
@@ -88,9 +85,7 @@ class ScopeConfigValueChecksTest extends TestCase
         $this->assertSame($systemCheck->getUrl(), $checkResult->getUrl());
     }
 
-    /**
-     * @dataProvider getClassesWithoutUrl
-     */
+    #[DataProvider('getClassesWithoutUrl')]
     public function testOtherChecksHaveNoUrl(string $className): void
     {
         $systemCheck = $this->createSystemCheck($className, '', 'foo');
@@ -162,7 +157,7 @@ class ScopeConfigValueChecksTest extends TestCase
         $storeId = 1;
         $storeValuesById = [];
         foreach ($storeValues as $storeCode => $storeValue) {
-            $store = $this->createMock(StoreInterface::class);
+            $store = $this->createStub(StoreInterface::class);
             $store->method('getId')->willReturn($storeId);
             $store->method('getCode')->willReturn($storeCode);
             $stores[] = $store;
@@ -170,10 +165,10 @@ class ScopeConfigValueChecksTest extends TestCase
             $storeId++;
         }
 
-        $storeManager = $this->createMock(StoreManagerInterface::class);
+        $storeManager = $this->createStub(StoreManagerInterface::class);
         $storeManager->method('getStores')->willReturn($stores);
 
-        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig = $this->createStub(ScopeConfigInterface::class);
         $scopeConfig->method('getValue')->willReturnCallback(
             function (string $path, string $scopeType = 'default', $scopeCode = null) use ($configPath, $configValue, $storeValuesById) {
                 if ($path !== $configPath) {
@@ -189,14 +184,14 @@ class ScopeConfigValueChecksTest extends TestCase
         );
 
         $url = $this->createMock(UrlInterface::class);
-        $url->method('getUrl')
+        $url->expects($this->any())->method('getUrl')
             ->with('admin/system_config/edit', ['section' => 'customer'])
             ->willReturn('https://example.com/admin/system_config/edit/section/customer/');
 
-        $urlFactory = $this->createMock(UrlFactory::class);
+        $urlFactory = $this->createStub(UrlFactory::class);
         $urlFactory->method('create')->willReturn($url);
 
-        $checkResultCollectionFactory = $this->createMock(CheckResultCollectionFactory::class);
+        $checkResultCollectionFactory = $this->createStub(CheckResultCollectionFactory::class);
         $checkResultCollectionFactory->method('create')
             ->willReturnCallback(fn () => new CheckResultCollection());
 

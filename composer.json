@@ -33,7 +33,7 @@
     "require-dev": {
         "loki-checkout/magento2-functional-tests": "@dev",
         "loki/magento2-functional-tests": "@dev",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^10.5 || ^11.0 || ^12.0",
         "yireo/magento2-integration-test-helper": "~0.0"
     }
 }

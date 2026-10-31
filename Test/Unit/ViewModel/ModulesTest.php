@@ -11,13 +11,14 @@ use LokiCheckout\CoreAdminhtml\ValueObject\ModuleFactory;
 use LokiCheckout\CoreAdminhtml\ViewModel\Modules;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ModulesTest extends TestCase
 {
     public function testGetModulesOnlyReturnsLokiModules(): void
     {
-        $moduleListLoader = $this->createMock(ModuleListLoader::class);
+        $moduleListLoader = $this->createStub(ModuleListLoader::class);
         $moduleListLoader->method('load')->willReturn([
             'Magento_Catalog' => ['name' => 'Magento_Catalog'],
             'LokiCheckout_Foo' => ['name' => 'LokiCheckout_Foo'],
@@ -28,22 +29,22 @@ class ModulesTest extends TestCase
             'Vendor_LokiCheckoutIntegration' => ['name' => 'Vendor_LokiCheckoutIntegration'],
         ]);
 
-        $lokiCheckoutModules = $this->createMock(LokiCheckoutModules::class);
+        $lokiCheckoutModules = $this->createStub(LokiCheckoutModules::class);
         $lokiCheckoutModules->method('hasModule')
             ->willReturnCallback(fn (string $moduleName) => $moduleName === 'Vendor_Registered');
 
-        $composerPackageFactory = $this->createMock(ComposerPackageFactory::class);
+        $composerPackageFactory = $this->createStub(ComposerPackageFactory::class);
         $composerPackageFactory->method('createByModuleName')
             ->willReturnCallback(fn (string $moduleName) => new ComposerPackage($moduleName, '', '', ''));
 
         $createdModuleNames = [];
-        $moduleFactory = $this->createMock(ModuleFactory::class);
+        $moduleFactory = $this->createStub(ModuleFactory::class);
         $moduleFactory->method('create')
             ->willReturnCallback(function (array $data) use (&$createdModuleNames) {
                 $this->assertInstanceOf(ComposerPackage::class, $data['composerPackage']);
                 $this->assertSame($data['moduleName'], $data['composerPackage']->getModuleName());
                 $createdModuleNames[] = $data['moduleName'];
-                return $this->createMock(Module::class);
+                return $this->createStub(Module::class);
             });
 
         $modules = new Modules(
@@ -51,7 +52,7 @@ class ModulesTest extends TestCase
             $composerPackageFactory,
             $lokiCheckoutModules,
             $moduleFactory,
-            $this->createMock(ScopeConfigInterface::class)
+            $this->createStub(ScopeConfigInterface::class)
         );
 
         $this->assertCount(4, $modules->getModules());
@@ -61,9 +62,7 @@ class ModulesTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getShortenCommitValues
-     */
+    #[DataProvider('getShortenCommitValues')]
     public function testShortenCommit(string $commit, string $expected): void
     {
         $this->assertSame($expected, $this->createModulesViewModel()->shortenCommit($commit));
@@ -83,23 +82,21 @@ class ModulesTest extends TestCase
 
     public function testGetGitText(): void
     {
-        $gitInfo = $this->createMock(GitInfo::class);
+        $gitInfo = $this->createStub(GitInfo::class);
         $gitInfo->method('getCommit')->willReturn('91ec086c0485cbe4891f8dfdb2bc2570becb9122');
         $gitInfo->method('getBranch')->willReturn('main');
 
         $this->assertSame('91ec086c (main)', $this->createModulesViewModel()->getGitText($gitInfo));
     }
 
-    /**
-     * @dataProvider getLatestModuleVersionValues
-     */
+    #[DataProvider('getLatestModuleVersionValues')]
     public function testGetLatestModuleVersion(
         bool $isDevVersion,
         string $latestCommit,
         string $latestComposerVersion,
         string $expected
     ): void {
-        $module = $this->createMock(Module::class);
+        $module = $this->createStub(Module::class);
         $module->method('isDevVersion')->willReturn($isDevVersion);
         $module->method('getLatestCommit')->willReturn($latestCommit);
         $module->method('getLatestComposerVersion')->willReturn($latestComposerVersion);
@@ -117,9 +114,7 @@ class ModulesTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getLatestModuleVersionClassValues
-     */
+    #[DataProvider('getLatestModuleVersionClassValues')]
     public function testGetLatestModuleVersionClass(
         bool $isDevVersion,
         string $currentCommit,
@@ -128,10 +123,10 @@ class ModulesTest extends TestCase
         string $latestComposerVersion,
         string $expected
     ): void {
-        $gitInfo = $this->createMock(GitInfo::class);
+        $gitInfo = $this->createStub(GitInfo::class);
         $gitInfo->method('getCommit')->willReturn($currentCommit);
 
-        $module = $this->createMock(Module::class);
+        $module = $this->createStub(Module::class);
         $module->method('isDevVersion')->willReturn($isDevVersion);
         $module->method('getGitInfo')->willReturn($gitInfo);
         $module->method('getLatestCommit')->willReturn($latestCommit);
@@ -156,13 +151,11 @@ class ModulesTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getShowRegisteredValues
-     */
+    #[DataProvider('getShowRegisteredValues')]
     public function testShowRegistered(mixed $configValue, bool $expected): void
     {
         $scopeConfig = $this->createMock(ScopeConfigInterface::class);
-        $scopeConfig->method('getValue')
+        $scopeConfig->expects($this->any())->method('getValue')
             ->with('loki_checkout/module_overview/show_registered')
             ->willReturn($configValue);
 
@@ -181,11 +174,11 @@ class ModulesTest extends TestCase
     private function createModulesViewModel(?ScopeConfigInterface $scopeConfig = null): Modules
     {
         return new Modules(
-            $this->createMock(ModuleListLoader::class),
-            $this->createMock(ComposerPackageFactory::class),
-            $this->createMock(LokiCheckoutModules::class),
-            $this->createMock(ModuleFactory::class),
-            $scopeConfig ?? $this->createMock(ScopeConfigInterface::class)
+            $this->createStub(ModuleListLoader::class),
+            $this->createStub(ComposerPackageFactory::class),
+            $this->createStub(LokiCheckoutModules::class),
+            $this->createStub(ModuleFactory::class),
+            $scopeConfig ?? $this->createStub(ScopeConfigInterface::class)
         );
     }
 }

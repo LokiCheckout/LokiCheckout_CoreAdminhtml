@@ -14,7 +14,7 @@ class ModulesEnabledTest extends TestCase
 {
     public function testDependenciesOfLokiModulesAreChecked(): void
     {
-        $moduleList = $this->createMock(ModuleList::class);
+        $moduleList = $this->createStub(ModuleList::class);
         $moduleList->method('getAll')->willReturn([
             'Magento_Catalog' => ['name' => 'Magento_Catalog', 'sequence' => ['Magento_Eav']],
             'LokiCheckout_Foo' => ['name' => 'LokiCheckout_Foo', 'sequence' => ['Loki_Components', 'Vendor_Disabled']],
@@ -22,15 +22,15 @@ class ModulesEnabledTest extends TestCase
             'LokiTheme_Bar' => ['name' => 'LokiTheme_Bar', 'sequence' => ['Loki_Components']],
         ]);
 
-        $moduleManager = $this->createMock(ModuleManager::class);
+        $moduleManager = $this->createStub(ModuleManager::class);
         $moduleManager->method('isEnabled')
             ->willReturnCallback(fn (string $moduleName) => $moduleName !== 'Vendor_Disabled');
 
-        $lokiCheckoutModules = $this->createMock(LokiCheckoutModules::class);
+        $lokiCheckoutModules = $this->createStub(LokiCheckoutModules::class);
         $lokiCheckoutModules->method('seemsModule')
             ->willReturnCallback(fn (string $moduleName) => str_contains($moduleName, 'LokiCheckout'));
 
-        $checkResultCollectionFactory = $this->createMock(CheckResultCollectionFactory::class);
+        $checkResultCollectionFactory = $this->createStub(CheckResultCollectionFactory::class);
         $checkResultCollectionFactory->method('create')
             ->willReturnCallback(fn () => new CheckResultCollection());
 

@@ -7,6 +7,7 @@ use LokiCheckout\CoreAdminhtml\ValueObject\CheckResultCollectionFactory;
 use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\DevModules;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\Module\Manager as ModuleManager;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class DevModulesTest extends TestCase
@@ -19,9 +20,7 @@ class DevModulesTest extends TestCase
         'Loki_Debugger',
     ];
 
-    /**
-     * @dataProvider getTestValues
-     */
+    #[DataProvider('getTestValues')]
     public function testCheckResults(string $mode, bool $isEnabled, string $expectedValue, bool $expectedValid): void
     {
         $checkResults = $this->createDevModules($mode, $isEnabled)->getCheckResultCollection()->get();
@@ -57,13 +56,13 @@ class DevModulesTest extends TestCase
 
     private function createDevModules(string $mode, bool $isEnabled): DevModules
     {
-        $moduleManager = $this->createMock(ModuleManager::class);
+        $moduleManager = $this->createStub(ModuleManager::class);
         $moduleManager->method('isEnabled')->willReturn($isEnabled);
 
-        $appState = $this->createMock(AppState::class);
+        $appState = $this->createStub(AppState::class);
         $appState->method('getMode')->willReturn($mode);
 
-        $checkResultCollectionFactory = $this->createMock(CheckResultCollectionFactory::class);
+        $checkResultCollectionFactory = $this->createStub(CheckResultCollectionFactory::class);
         $checkResultCollectionFactory->method('create')
             ->willReturnCallback(fn () => new CheckResultCollection());
 
