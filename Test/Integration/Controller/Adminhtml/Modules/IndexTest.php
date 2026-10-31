@@ -4,6 +4,7 @@ namespace LokiCheckout\CoreAdminhtml\Test\Integration\Controller\Adminhtml\Modul
 
 use LokiCheckout\Core\Util\Composer\ComposerApi;
 use LokiCheckout\CoreAdminhtml\Test\Integration\Stub\ComposerApiStub;
+use LokiCheckout\CoreAdminhtml\Test\Integration\Stub\FailingComposerApiStub;
 use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\TestFramework\Fixture\AppArea;
 use Magento\TestFramework\Fixture\Config as ConfigFixture;
@@ -52,5 +53,30 @@ class IndexTest extends AbstractBackendController
         /** @var HttpResponse $response */
         $response = $this->getResponse();
         $this->assertStringContainsString('LokiCheckout registered', (string)$response->getBody());
+    }
+
+    public function testDocsLinkDoesNotExposeTheAdminWindow(): void
+    {
+        $this->dispatch($this->uri);
+
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertMatchesRegularExpression(
+            '#<a target="_blank" rel="noopener noreferrer" href="https://loki-checkout.com/docs/04-modules/LokiCheckout_CoreAdminhtml">#',
+            (string)$response->getBody()
+        );
+    }
+
+    public function testPageRendersWhenComposerApiIsUnreachable(): void
+    {
+        $this->_objectManager->addSharedInstance(new FailingComposerApiStub(), ComposerApi::class);
+        $this->dispatch($this->uri);
+
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $this->assertSame(200, $response->getHttpResponseCode());
+        $body = (string)$response->getBody();
+        $this->assertStringContainsString('LokiCheckout_CoreAdminhtml', $body);
+        $this->assertStringContainsString('unknown', $body);
     }
 }

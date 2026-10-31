@@ -64,7 +64,7 @@ $showRegistered = $modulesViewModel->showRegistered();
             <tr>
                 <td>
                     <div class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'grid-cell')) ?>">
-                        <a target="_new" href="<?= $escaper->escapeUrl('https://loki-checkout.com/docs/04-modules/' . $module->getName()) ?>">
+                        <a target="_blank" rel="noopener noreferrer" href="<?= $escaper->escapeUrl('https://loki-checkout.com/docs/04-modules/' . $module->getName()) ?>">
                             <?= $escaper->escapeHtml($module->getName()) ?>
                         </a>
                     </div>

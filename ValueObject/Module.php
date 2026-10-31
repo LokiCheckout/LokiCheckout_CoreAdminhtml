@@ -11,6 +11,8 @@ use Throwable;
 
 class Module
 {
+    private ?GitInfo $gitInfo = null;
+
     public function __construct(
         private readonly ComponentRegistrar $componentRegistrar,
         private readonly ModuleManager $moduleManager,
@@ -69,9 +71,13 @@ class Module
 
     public function getGitInfo(): GitInfo
     {
-        return $this->gitInfoFactory->create([
-            'path' => $this->getModulePath(),
-        ]);
+        if ($this->gitInfo === null) {
+            $this->gitInfo = $this->gitInfoFactory->create([
+                'path' => $this->getModulePath(),
+            ]);
+        }
+
+        return $this->gitInfo;
     }
 
     public function getDate(): string

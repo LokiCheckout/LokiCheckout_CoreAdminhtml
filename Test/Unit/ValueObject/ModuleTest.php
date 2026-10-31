@@ -55,6 +55,32 @@ class ModuleTest extends TestCase
         $this->assertFalse($module->isDevVersion());
     }
 
+    public function testGitInfoIsOnlyCreatedOnce(): void
+    {
+        $componentRegistrar = $this->createStub(ComponentRegistrar::class);
+        $componentRegistrar->method('getPath')->willReturn('/path/to/module');
+
+        $gitInfo = $this->createStub(GitInfo::class);
+        $gitInfo->method('hasInfo')->willReturn(true);
+
+        $gitInfoFactory = $this->createMock(GitInfoFactory::class);
+        $gitInfoFactory->expects($this->once())->method('create')->willReturn($gitInfo);
+
+        $module = new Module(
+            $componentRegistrar,
+            $this->createStub(ModuleManager::class),
+            $this->createStub(LokiCheckoutModules::class),
+            $gitInfoFactory,
+            $this->createStub(ComposerApi::class),
+            'LokiCheckout_Foo',
+            new ComposerPackage('LokiCheckout_Foo', 'loki-checkout/foo', '1.2.3', '2026-01-01'),
+        );
+
+        $module->getGitInfo();
+        $this->assertTrue($module->isDevVersion());
+        $this->assertSame($gitInfo, $module->getGitInfo());
+    }
+
     public function testComposerApiFailuresDoNotBreakModule(): void
     {
         $exception = new \RuntimeException('cURL error 6: Could not resolve host: composer.yireo.com');

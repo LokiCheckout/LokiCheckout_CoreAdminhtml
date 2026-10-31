@@ -9,9 +9,11 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use LokiCheckout\Core\Config\LokiCheckoutModules;
+use LokiCheckout\Core\Util\Composer\ComposerPackage;
 use LokiCheckout\Core\Util\Composer\ComposerPackageFactory;
 use LokiCheckout\CoreAdminhtml\ValueObject\Module;
 use LokiCheckout\CoreAdminhtml\ValueObject\ModuleFactory;
+use Throwable;
 
 class Modules implements ArgumentInterface
 {
@@ -42,13 +44,9 @@ class Modules implements ArgumentInterface
                 continue;
             }
 
-            $composerPackage
-                = $this->composerPackageFactory->createByModuleName(
-                $moduleName
-            );
             $modules[] = $this->moduleFactory->create([
                 'moduleName' => $moduleName,
-                'composerPackage' => $composerPackage,
+                'composerPackage' => $this->createComposerPackage($moduleName),
             ]);
         }
 
@@ -65,6 +63,10 @@ class Modules implements ArgumentInterface
         }
 
         $latestComposerVersion = $module->getLatestComposerVersion();
+        if ($this->isCommit($latestComposerVersion)) {
+            return $this->shortenCommit($latestComposerVersion);
+        }
+
         if (!empty($latestComposerVersion)) {
             return $latestComposerVersion;
         }
@@ -85,7 +87,7 @@ class Modules implements ArgumentInterface
 
         $composerVersion = ltrim($module->getComposerVersion(), 'vV');
         $latestComposerVersion = ltrim($module->getLatestComposerVersion(), 'vV');
-        if ($composerVersion === '' || $latestComposerVersion === '') {
+        if (!$this->isReleaseVersion($composerVersion) || !$this->isReleaseVersion($latestComposerVersion)) {
             return 'warning';
         }
 
@@ -98,7 +100,16 @@ class Modules implements ArgumentInterface
 
     public function getGitText(GitInfo $gitInfo): string
     {
-        return $this->shortenCommit($gitInfo->getCommit()) . ' (' . $gitInfo->getBranch() . ')';
+        $parts = [];
+        if ($gitInfo->getCommit() !== '') {
+            $parts[] = $this->shortenCommit($gitInfo->getCommit());
+        }
+
+        if ($gitInfo->getBranch() !== '') {
+            $parts[] = '(' . $gitInfo->getBranch() . ')';
+        }
+
+        return implode(' ', $parts);
     }
 
     public function shortenCommit(string $gitCommit): string
@@ -111,5 +122,24 @@ class Modules implements ArgumentInterface
         return (bool)$this->scopeConfig->getValue(
             'loki_checkout/module_overview/show_registered'
         );
+    }
+
+    private function createComposerPackage(string $moduleName): ComposerPackage
+    {
+        try {
+            return $this->composerPackageFactory->createByModuleName($moduleName);
+        } catch (Throwable) {
+            return new ComposerPackage($moduleName, '', '', '');
+        }
+    }
+
+    private function isReleaseVersion(string $version): bool
+    {
+        return (bool)preg_match('/^\d+(\.\d+)*(-?(p|patch|alpha|beta|rc|a|b)\.?\d*)?$/i', $version);
+    }
+
+    private function isCommit(string $version): bool
+    {
+        return (bool)preg_match('/^[0-9a-f]{40}$/', $version);
     }
 }

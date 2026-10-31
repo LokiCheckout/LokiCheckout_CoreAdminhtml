@@ -80,13 +80,66 @@ class ModulesTest extends TestCase
         ];
     }
 
-    public function testGetGitText(): void
+    #[DataProvider('getGitTextValues')]
+    public function testGetGitText(string $commit, string $branch, string $expected): void
     {
         $gitInfo = $this->createStub(GitInfo::class);
-        $gitInfo->method('getCommit')->willReturn('91ec086c0485cbe4891f8dfdb2bc2570becb9122');
-        $gitInfo->method('getBranch')->willReturn('main');
+        $gitInfo->method('getCommit')->willReturn($commit);
+        $gitInfo->method('getBranch')->willReturn($branch);
 
-        $this->assertSame('91ec086c (main)', $this->createModulesViewModel()->getGitText($gitInfo));
+        $this->assertSame($expected, $this->createModulesViewModel()->getGitText($gitInfo));
+    }
+
+    public static function getGitTextValues(): array
+    {
+        return [
+            'commit and branch' => ['91ec086c0485cbe4891f8dfdb2bc2570becb9122', 'main', '91ec086c (main)'],
+            'detached head' => ['91ec086c0485cbe4891f8dfdb2bc2570becb9122', '', '91ec086c'],
+            'unresolvable commit' => ['', 'main', '(main)'],
+            'nothing known' => ['', '', ''],
+        ];
+    }
+
+    public function testGetModulesSurvivesBrokenComposerPackage(): void
+    {
+        $moduleListLoader = $this->createStub(ModuleListLoader::class);
+        $moduleListLoader->method('load')->willReturn([
+            'LokiCheckout_Broken' => ['name' => 'LokiCheckout_Broken'],
+            'LokiCheckout_Foo' => ['name' => 'LokiCheckout_Foo'],
+        ]);
+
+        $composerPackageFactory = $this->createStub(ComposerPackageFactory::class);
+        $composerPackageFactory->method('createByModuleName')->willReturnCallback(
+            function (string $moduleName) {
+                if ($moduleName === 'LokiCheckout_Broken') {
+                    throw new \TypeError('Cannot access offset of type string on null');
+                }
+
+                return new ComposerPackage($moduleName, 'loki-checkout/foo', '1.0.0', '');
+            }
+        );
+
+        $composerPackages = [];
+        $moduleFactory = $this->createStub(ModuleFactory::class);
+        $moduleFactory->method('create')->willReturnCallback(
+            function (array $data) use (&$composerPackages) {
+                $composerPackages[$data['moduleName']] = $data['composerPackage'];
+                return $this->createStub(Module::class);
+            }
+        );
+
+        $modules = new Modules(
+            $moduleListLoader,
+            $composerPackageFactory,
+            $this->createStub(LokiCheckoutModules::class),
+            $moduleFactory,
+            $this->createStub(ScopeConfigInterface::class)
+        );
+
+        $this->assertCount(2, $modules->getModules());
+        $this->assertSame('LokiCheckout_Broken', $composerPackages['LokiCheckout_Broken']->getModuleName());
+        $this->assertSame('', $composerPackages['LokiCheckout_Broken']->getComposerName());
+        $this->assertSame('loki-checkout/foo', $composerPackages['LokiCheckout_Foo']->getComposerName());
     }
 
     #[DataProvider('getLatestModuleVersionValues')]
@@ -111,6 +164,7 @@ class ModulesTest extends TestCase
             'dev version without commit' => [true, '', '1.2.3', '1.2.3'],
             'release version' => [false, '0123456789abcdef', '1.2.3', '1.2.3'],
             'unknown version' => [false, '', '', 'unknown'],
+            'release version, latest is a commit' => [false, '', '0123456789abcdef0123456789abcdef01234567', '01234567'],
         ];
     }
 
@@ -148,6 +202,12 @@ class ModulesTest extends TestCase
             'release version, latest unknown' => [false, '', '', '1.2.3', '', 'warning'],
             'release version, both unknown' => [false, '', '', '', '', 'warning'],
             'dev version, latest commit unknown' => [true, 'abc', '', '', '', 'warning'],
+            'current version unknown in composer.lock' => [false, '', '', 'unknown', '1.2.3', 'warning'],
+            'current version is a dev branch' => [false, '', '', 'dev-main', '1.2.3', 'warning'],
+            'current version is a branch alias' => [false, '', '', '1.0.x-dev', '1.2.3', 'warning'],
+            'latest version is a commit' => [false, '', '', '1.2.3', '0123456789abcdef0123456789abcdef01234567', 'warning'],
+            'patch release outdated' => [false, '', '', '2.4.8-p1', '2.4.8-p2', 'error'],
+            'beta release up to date' => [false, '', '', '1.0.0-beta1', '1.0.0-beta1', 'notice'],
         ];
     }
 

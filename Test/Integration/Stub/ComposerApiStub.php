@@ -13,6 +13,10 @@ class ComposerApiStub extends ComposerApi
     public const LATEST_VERSION = '99.0.0';
     public const LATEST_COMMIT = '0123456789abcdef0123456789abcdef01234567';
 
+    public function __construct()
+    {
+    }
+
     public function getProjects(): array
     {
         return [
