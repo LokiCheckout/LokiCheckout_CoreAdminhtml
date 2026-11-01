@@ -79,4 +79,21 @@ class IndexTest extends AbstractBackendController
         $this->assertStringContainsString('LokiCheckout_CoreAdminhtml', $body);
         $this->assertStringContainsString('unknown', $body);
     }
+
+    public function testCssScopesAreMeaningful(): void
+    {
+        $this->dispatch($this->uri);
+
+        /** @var HttpResponse $response */
+        $response = $this->getResponse();
+        $body = (string)$response->getBody();
+        $this->assertStringNotContainsString('@todo', $body);
+        foreach (['table', 'th', 'th-span'] as $scope) {
+            $this->assertMatchesRegularExpression(
+                '/class="loki-checkout-modules__' . preg_quote($scope, '/') . ' scope-' . preg_quote($scope, '/') . '[ "]/',
+                $body,
+                'Missing CSS scope "' . $scope . '"'
+            );
+        }
+    }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 /** @version 1.0.13 */
 
+use Loki\CssUtils\Util\CssClass;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\Escaper;
 use Loki\Components\Factory\ViewModelFactory;
@@ -12,6 +13,7 @@ use LokiCheckout\CoreAdminhtml\ViewModel\Modules;
 /** @var Escaper $escaper */
 /** @var ViewModelFactory $viewModelFactory */
 /** @var Modules $modulesViewModel */
+/** @var CssClass $css */
 $modulesViewModel = $viewModelFactory->create(Modules::class);
 $modules = $modulesViewModel->getModules();
 $showRegistered = $modulesViewModel->showRegistered();
@@ -22,38 +24,38 @@ $showRegistered = $modulesViewModel->showRegistered();
 </div>
 
 <div class="<?= $escaper->escapeHtml($css('admin__data-grid-wrap', 'grid')) ?>">
-    <table class="<?= $escaper->escapeHtml($css('data-grid', '@todo')) ?>">
+    <table class="<?= $escaper->escapeHtml($css('data-grid', 'table')) ?>">
         <thead>
         <tr>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
                     <?= $escaper->escapeHtml(__('Module name')) ?>
                 </span>
             </th>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
                     <?= $escaper->escapeHtml(__('Module status')) ?>
                 </span>
             </th>
             <?php if ($showRegistered): ?>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>" title="Optional DI hook for various tasks">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>" title="Optional DI hook for various tasks">
                     <?= $escaper->escapeHtml(__('LokiCheckout registered')) ?>
                 </span>
             </th>
             <?php endif; ?>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>">
                     <?= $escaper->escapeHtml(__('Composer name')) ?>
                 </span>
             </th>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>" title="Current version locked in your root composer.lock">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>" title="Current version locked in your root composer.lock">
                     <?= $escaper->escapeHtml(__('Current version')) ?>
                 </span>
             </th>
-            <th class="<?= $escaper->escapeHtml($css('data-grid-th', '@todo')) ?>">
-                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', '@todo')) ?>" title="Latest version as read from https://composer.yireo.com/">
+            <th class="<?= $escaper->escapeHtml($css('data-grid-th', 'th')) ?>">
+                <span class="<?= $escaper->escapeHtml($css('data-grid-cell-content', 'th-span')) ?>" title="Latest version as read from https://composer.yireo.com/">
                     <?= $escaper->escapeHtml(__('Newest version')) ?>
                 </span>
             </th>

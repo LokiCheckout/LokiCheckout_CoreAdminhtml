@@ -44,6 +44,23 @@ test.describe('LokiCheckout_CoreAdminhtml module overview', () => {
             }
         });
 
+        test(`uses meaningful CSS scopes for the grid (${theme.name})`, async ({page}) => {
+            await configureWithTheme(page, withTheme(config, theme));
+            await new AdminLogin(page).login();
+
+            const moduleOverviewPage = new ModuleOverviewPage(page);
+            await moduleOverviewPage.open();
+
+            const table = moduleOverviewPage.getTable();
+            await expect(table).toHaveClass(/(^|\s)loki-checkout-modules__table(\s|$)/);
+
+            const headers = table.locator('thead th');
+            const headerCount = await headers.count();
+            await expect(table.locator('thead th.loki-checkout-modules__th')).toHaveCount(headerCount);
+            await expect(table.locator('thead th > span.loki-checkout-modules__th-span')).toHaveCount(headerCount);
+            await expect(page.locator('[class*="@"]')).toHaveCount(0);
+        });
+
         test(`shows a status badge for the newest version (${theme.name})`, async ({page}) => {
             await configureWithTheme(page, withTheme(config, theme));
             await new AdminLogin(page).login();
