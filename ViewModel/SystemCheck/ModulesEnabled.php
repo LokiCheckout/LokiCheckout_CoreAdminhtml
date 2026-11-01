@@ -2,6 +2,8 @@
 
 namespace LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck;
 
+use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\Module\ModuleList;
 use LokiCheckout\Core\Config\LokiCheckoutModules;
@@ -13,6 +15,7 @@ class ModulesEnabled extends SystemCheck
         private readonly ModuleList $moduleList,
         private readonly ModuleManager $moduleManager,
         private readonly LokiCheckoutModules $lokiCheckoutModules,
+        private readonly ComponentRegistrarInterface $componentRegistrar,
         CheckResultCollectionFactory $checkResultCollectionFactory
     ) {
         parent::__construct($checkResultCollectionFactory);
@@ -39,10 +42,23 @@ class ModulesEnabled extends SystemCheck
             $isEnabled = $this->moduleManager->isEnabled($moduleDependency);
             $this->addCheckResult(
                 $moduleDependency,
-                $isEnabled ? 'Enabled' : 'Disabled',
+                $this->getStatus($moduleDependency, $isEnabled),
                 $isEnabled,
                 (string)__('The following modules depend on module %1 to be enabled', $moduleDependency) . ': ' . implode(', ', $moduleNames)
             );
         }
+    }
+
+    private function getStatus(string $moduleName, bool $isEnabled): string
+    {
+        if ($isEnabled) {
+            return 'Enabled';
+        }
+
+        if ($this->componentRegistrar->getPath(ComponentRegistrar::MODULE, $moduleName) === null) {
+            return 'Not installed';
+        }
+
+        return 'Disabled';
     }
 }

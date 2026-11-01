@@ -4,6 +4,7 @@ namespace LokiCheckout\CoreAdminhtml\Test\Integration\ViewModel\SystemCheck;
 
 use LokiCheckout\CoreAdminhtml\ViewModel\SystemCheck\ModulesEnabled;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Module\ModuleList;
 use Magento\TestFramework\Fixture\AppArea;
 use PHPUnit\Framework\TestCase;
 
@@ -34,5 +35,27 @@ class ModulesEnabledTest extends TestCase
         $count = count($modulesEnabled->getCheckResultCollection()->get());
 
         $this->assertCount($count, $modulesEnabled->getCheckResultCollection()->get());
+    }
+
+    public function testDependencyThatIsNotInstalledIsReportedAsNotInstalled(): void
+    {
+        $moduleList = $this->createStub(ModuleList::class);
+        $moduleList->method('getAll')->willReturn([
+            'LokiCheckout_CoreAdminhtml' => [
+                'name' => 'LokiCheckout_CoreAdminhtml',
+                'sequence' => ['LokiCheckout_Core', 'Vendor_NotInstalledAnywhere'],
+            ],
+        ]);
+
+        $modulesEnabled = ObjectManager::getInstance()->create(ModulesEnabled::class, ['moduleList' => $moduleList]);
+
+        $checkResultsByLabel = [];
+        foreach ($modulesEnabled->getCheckResultCollection()->get() as $checkResult) {
+            $checkResultsByLabel[$checkResult->getLabel()] = $checkResult;
+        }
+
+        $this->assertSame('Enabled', $checkResultsByLabel['LokiCheckout_Core']->getValue());
+        $this->assertSame('Not installed', $checkResultsByLabel['Vendor_NotInstalledAnywhere']->getValue());
+        $this->assertFalse($checkResultsByLabel['Vendor_NotInstalledAnywhere']->isValid());
     }
 }
