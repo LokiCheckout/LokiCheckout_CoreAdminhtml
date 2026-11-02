@@ -52,6 +52,10 @@ class ModulesTest extends TestCase
         $this->assertSame(ComposerApiStub::COMPOSER_NAME, $module->getComposerName());
         $this->assertNotEmpty($module->getModulePath());
         $this->assertContains($viewModel->getLatestModuleVersionClass($module), ['notice', 'warning', 'error']);
+        $this->assertSame(
+            $viewModel->hasMajorVersionMismatch($module),
+            in_array($module, $viewModel->getMajorVersionMismatchModules([$module]), true)
+        );
 
         $expectedVersion = $module->isDevVersion()
             ? $viewModel->shortenCommit(ComposerApiStub::LATEST_COMMIT)

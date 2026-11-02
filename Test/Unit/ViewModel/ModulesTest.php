@@ -211,6 +211,47 @@ class ModulesTest extends TestCase
         ];
     }
 
+    #[DataProvider('hasMajorVersionMismatchValues')]
+    public function testHasMajorVersionMismatch(
+        bool $isDevVersion,
+        string $composerVersion,
+        string $latestComposerVersion,
+        bool $expected
+    ): void {
+        $module = $this->createModuleStub($isDevVersion, $composerVersion, $latestComposerVersion);
+
+        $this->assertSame($expected, $this->createModulesViewModel()->hasMajorVersionMismatch($module));
+    }
+
+    public static function hasMajorVersionMismatchValues(): array
+    {
+        return [
+            'older major installed' => [false, '1.2.3', '2.0.0', true],
+            'newer major installed' => [false, '2.0.0', '1.9.9', true],
+            'same major, older minor' => [false, '1.2.3', '1.9.0', false],
+            'same version' => [false, '2.1.0', '2.1.0', false],
+            'v-prefix' => [false, 'v1.0.0', '2.0.0', true],
+            'patch release' => [false, '2.4.8-p1', '3.0.0', true],
+            'major 0 to 1' => [false, '0.9.0', '1.0.0', true],
+            'dev version' => [true, '1.0.0', '2.0.0', false],
+            'dev branch' => [false, 'dev-main', '2.0.0', false],
+            'branch alias' => [false, '1.0.x-dev', '2.0.0', false],
+            'unknown current' => [false, 'unknown', '2.0.0', false],
+            'empty latest' => [false, '1.0.0', '', false],
+            'latest is a commit' => [false, '1.0.0', '0123456789abcdef0123456789abcdef01234567', false],
+        ];
+    }
+
+    public function testGetMajorVersionMismatchModules(): void
+    {
+        $outdated = $this->createModuleStub(false, '1.0.0', '2.0.0');
+        $upToDate = $this->createModuleStub(false, '2.0.0', '2.1.0');
+        $devVersion = $this->createModuleStub(true, '1.0.0', '2.0.0');
+
+        $result = $this->createModulesViewModel()->getMajorVersionMismatchModules([$upToDate, $outdated, $devVersion]);
+        $this->assertSame([$outdated], $result);
+    }
+
     #[DataProvider('getShowRegisteredValues')]
     public function testShowRegistered(mixed $configValue, bool $expected): void
     {
@@ -229,6 +270,16 @@ class ModulesTest extends TestCase
             ['0', false],
             [null, false],
         ];
+    }
+
+    private function createModuleStub(bool $isDevVersion, string $composerVersion, string $latestComposerVersion): Module
+    {
+        $module = $this->createStub(Module::class);
+        $module->method('isDevVersion')->willReturn($isDevVersion);
+        $module->method('getComposerVersion')->willReturn($composerVersion);
+        $module->method('getLatestComposerVersion')->willReturn($latestComposerVersion);
+
+        return $module;
     }
 
     private function createModulesViewModel(?ScopeConfigInterface $scopeConfig = null): Modules

@@ -98,6 +98,33 @@ class Modules implements ArgumentInterface
         return 'error';
     }
 
+    public function hasMajorVersionMismatch(Module $module): bool
+    {
+        if ($module->isDevVersion()) {
+            return false;
+        }
+
+        $composerVersion = ltrim($module->getComposerVersion(), 'vV');
+        $latestComposerVersion = ltrim($module->getLatestComposerVersion(), 'vV');
+        if (!$this->isReleaseVersion($composerVersion) || !$this->isReleaseVersion($latestComposerVersion)) {
+            return false;
+        }
+
+        return $this->getMajorVersion($composerVersion) !== $this->getMajorVersion($latestComposerVersion);
+    }
+
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public function getMajorVersionMismatchModules(array $modules): array
+    {
+        return array_values(array_filter(
+            $modules,
+            fn (Module $module) => $this->hasMajorVersionMismatch($module)
+        ));
+    }
+
     public function getGitText(GitInfo $gitInfo): string
     {
         $parts = [];
@@ -136,6 +163,11 @@ class Modules implements ArgumentInterface
     private function isReleaseVersion(string $version): bool
     {
         return (bool)preg_match('/^\d+(\.\d+)*(-?(p|patch|alpha|beta|rc|a|b)\.?\d*)?$/i', $version);
+    }
+
+    private function getMajorVersion(string $version): int
+    {
+        return (int)explode('.', $version, 2)[0];
     }
 
     private function isCommit(string $version): bool

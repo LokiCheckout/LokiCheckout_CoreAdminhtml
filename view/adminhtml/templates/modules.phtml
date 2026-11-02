@@ -17,7 +17,17 @@ use LokiCheckout\CoreAdminhtml\ViewModel\Modules;
 $modulesViewModel = $viewModelFactory->create(Modules::class);
 $modules = $modulesViewModel->getModules();
 $showRegistered = $modulesViewModel->showRegistered();
+$majorVersionMismatchModules = $modulesViewModel->getMajorVersionMismatchModules($modules);
 ?>
+<?php if (!empty($majorVersionMismatchModules)): ?>
+    <div class="<?= $escaper->escapeHtml($css('message message-warning', 'major-version-warning')) ?>">
+        <?= $escaper->escapeHtml(__(
+            '%1 module(s) have a different major version than the latest available version: %2. Check the upgrade notes before upgrading.',
+            count($majorVersionMismatchModules),
+            implode(', ', array_map(fn ($module) => $module->getName(), $majorVersionMismatchModules))
+        )) ?>
+    </div>
+<?php endif; ?>
 <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header admin__data-grid-toolbar', 'toolbar')) ?>">
     <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', 'header-row')) ?>"></div>
     <div class="<?= $escaper->escapeHtml($css('admin__data-grid-header-row', 'header-row')) ?>"><?= $escaper->escapeHtml(__ ('%1 modules found', count($modules))) ?></div>
@@ -113,6 +123,15 @@ $showRegistered = $modulesViewModel->showRegistered();
                         <span class="module-status module-status-<?= $escaper->escapeHtml($cssClass) ?>" title="<?= $escaper->escapeHtml($module->getLatestModuleDate()) ?>">
                             <?= $escaper->escapeHtml($modulesViewModel->getLatestModuleVersion($module)) ?>
                         </span>
+                        <?php if ($modulesViewModel->hasMajorVersionMismatch($module)): ?>
+                            <div class="<?= $escaper->escapeHtml($css('module-major-warning', 'major-warning')) ?>">
+                                <?= $escaper->escapeHtml(__(
+                                    'Major version differs from latest (%1 → %2), check the upgrade notes',
+                                    $module->getComposerVersion(),
+                                    $module->getLatestComposerVersion()
+                                )) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
@@ -124,6 +143,12 @@ $showRegistered = $modulesViewModel->showRegistered();
 <style>
     .module-status {
         padding: 1px 3px 1px 3px;
+    }
+
+    .module-major-warning {
+        margin-top: 4px;
+        color: #ff833b;
+        font-size: 1.2rem;
     }
 
     .module-status-error {
