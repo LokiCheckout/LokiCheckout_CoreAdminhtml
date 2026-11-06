@@ -26,6 +26,7 @@
         "Magento_Directory",
         "Magento_Eav",
         "Magento_Indexer",
+        "Magento_MediaGalleryUiApi",
         "Magento_Newsletter",
         "Magento_Payment",
         "Magento_Quote",
@@ -53,8 +54,8 @@
         }
     ],
     "tests": {
-        "unit": 36,
-        "integration": 29,
+        "unit": 47,
+        "integration": 34,
         "functional": 0
     },
     "phpcs_severity": "9",
