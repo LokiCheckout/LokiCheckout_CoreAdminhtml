@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.14] - 06 November 2026
+### Added
+- Warn when installed major version differs from latest available
+
+### Fixed
+- Replace @todo CSS scopes with table, th and th-span
+- Show a module dependency that is not installed as "Not installed"
+- Cover git directory variants and CSP report-only warning
+- Harden version status and rendering of the module overview
+- Show a failing system check as error row instead of breaking the page
+- Use DataProvider attributes and stubs for PHPUnit 12 compatibility
+
 ## [1.0.13] - 30 October 2026
 ### Added
 - Add warning state to check results
@@ -92,4 +104,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move files from core module
 - Init files
 - Adding all files to git via Yireo Command
-
