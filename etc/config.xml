@@ -5,6 +5,7 @@
         <loki_checkout>
             <module_overview>
                 <show_registered>0</show_registered>
+                <major_version_check>1</major_version_check>
             </module_overview>
         </loki_checkout>
     </default>

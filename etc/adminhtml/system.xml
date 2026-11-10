@@ -15,6 +15,17 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <tooltip>Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app/etc/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc.</tooltip>
                 </field>
+                <field id="major_version_check"
+                       translate="label tooltip"
+                       type="select"
+                       sortOrder="2"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Notify About New Major Versions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>Check weekly (via cron) whether installed packages have a new major version available on composer.yireo.com and add an admin notification when they do.</tooltip>
+                </field>
             </group>
         </section>
     </system>
