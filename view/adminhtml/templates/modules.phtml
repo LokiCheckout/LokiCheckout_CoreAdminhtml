@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** @version 1.0.14 */
+/** @version 1.0.15 */
 
 use Loki\CssUtils\Util\CssClass;
 use Magento\Framework\View\Element\Template;
@@ -18,7 +18,18 @@ $modulesViewModel = $viewModelFactory->create(Modules::class);
 $modules = $modulesViewModel->getModules();
 $showRegistered = $modulesViewModel->showRegistered();
 $majorVersionMismatchModules = $modulesViewModel->getMajorVersionMismatchModules($modules);
+$majorVersionUpdates = $modulesViewModel->getMajorVersionUpdates();
 ?>
+<?php if (!empty($majorVersionUpdates)): ?>
+    <div class="<?= $escaper->escapeHtml($css('message message-warning', 'major-version-updates')) ?>">
+        <?= $escaper->escapeHtml(__('The following packages have a new major version available:')) ?>
+        <ul>
+            <?php foreach ($majorVersionUpdates as $majorVersionUpdate): ?>
+                <li><?= $escaper->escapeHtml($majorVersionUpdate->getComposerName() . ': ' . $majorVersionUpdate->getInstalledVersion() . ' → ' . $majorVersionUpdate->getLatestVersion()) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
 <?php if (!empty($majorVersionMismatchModules)): ?>
     <div class="<?= $escaper->escapeHtml($css('message message-warning', 'major-version-warning')) ?>">
         <?= $escaper->escapeHtml(__(

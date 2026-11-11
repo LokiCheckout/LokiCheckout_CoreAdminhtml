@@ -3,9 +3,14 @@ declare(strict_types=1);
 
 namespace LokiCheckout\CoreAdminhtml\ViewModel;
 
+use LokiCheckout\CoreAdminhtml\Cron\MajorVersionCheck;
+use LokiCheckout\CoreAdminhtml\Util\MajorVersion;
+use LokiCheckout\CoreAdminhtml\Util\MajorVersionChecker;
 use LokiCheckout\CoreAdminhtml\ValueObject\GitInfo;
+use LokiCheckout\CoreAdminhtml\ValueObject\MajorVersionUpdate;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use LokiCheckout\Core\Config\LokiCheckoutModules;
@@ -23,6 +28,9 @@ class Modules implements ArgumentInterface
         private readonly LokiCheckoutModules $lokiCheckoutModules,
         private readonly ModuleFactory $moduleFactory,
         private readonly ScopeConfigInterface $scopeConfig,
+        private readonly MajorVersion $majorVersion,
+        private readonly MajorVersionChecker $majorVersionChecker,
+        private readonly ModuleManager $moduleManager,
     ) {
     }
 
@@ -110,7 +118,7 @@ class Modules implements ArgumentInterface
             return false;
         }
 
-        return $this->getMajorVersion($composerVersion) !== $this->getMajorVersion($latestComposerVersion);
+        return $this->majorVersion->isDifferent($composerVersion, $latestComposerVersion);
     }
 
     /**
@@ -123,6 +131,26 @@ class Modules implements ArgumentInterface
             $modules,
             fn (Module $module) => $this->hasMajorVersionMismatch($module)
         ));
+    }
+
+    /**
+     * @return MajorVersionUpdate[]
+     */
+    public function getMajorVersionUpdates(): array
+    {
+        if ($this->moduleManager->isEnabled('Magento_AdminNotification')) {
+            return [];
+        }
+
+        if (!$this->scopeConfig->isSetFlag(MajorVersionCheck::CONFIG_PATH)) {
+            return [];
+        }
+
+        try {
+            return $this->majorVersionChecker->getMajorUpdates();
+        } catch (Throwable) {
+            return [];
+        }
     }
 
     public function getGitText(GitInfo $gitInfo): string
@@ -163,11 +191,6 @@ class Modules implements ArgumentInterface
     private function isReleaseVersion(string $version): bool
     {
         return (bool)preg_match('/^\d+(\.\d+)*(-?(p|patch|alpha|beta|rc|a|b)\.?\d*)?$/i', $version);
-    }
-
-    private function getMajorVersion(string $version): int
-    {
-        return (int)explode('.', $version, 2)[0];
     }
 
     private function isCommit(string $version): bool

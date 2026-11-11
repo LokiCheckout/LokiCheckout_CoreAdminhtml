@@ -5,14 +5,20 @@ namespace LokiCheckout\CoreAdminhtml\Test\Unit\ViewModel;
 use LokiCheckout\Core\Config\LokiCheckoutModules;
 use LokiCheckout\Core\Util\Composer\ComposerPackage;
 use LokiCheckout\Core\Util\Composer\ComposerPackageFactory;
+use LokiCheckout\CoreAdminhtml\Cron\MajorVersionCheck;
+use LokiCheckout\CoreAdminhtml\Util\MajorVersion;
+use LokiCheckout\CoreAdminhtml\Util\MajorVersionChecker;
 use LokiCheckout\CoreAdminhtml\ValueObject\GitInfo;
+use LokiCheckout\CoreAdminhtml\ValueObject\MajorVersionUpdate;
 use LokiCheckout\CoreAdminhtml\ValueObject\Module;
 use LokiCheckout\CoreAdminhtml\ValueObject\ModuleFactory;
 use LokiCheckout\CoreAdminhtml\ViewModel\Modules;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\Module\ModuleList\Loader as ModuleListLoader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class ModulesTest extends TestCase
 {
@@ -52,7 +58,10 @@ class ModulesTest extends TestCase
             $composerPackageFactory,
             $lokiCheckoutModules,
             $moduleFactory,
-            $this->createStub(ScopeConfigInterface::class)
+            $this->createStub(ScopeConfigInterface::class),
+            new MajorVersion(),
+            $this->createStub(MajorVersionChecker::class),
+            $this->createStub(ModuleManager::class)
         );
 
         $this->assertCount(4, $modules->getModules());
@@ -133,7 +142,10 @@ class ModulesTest extends TestCase
             $composerPackageFactory,
             $this->createStub(LokiCheckoutModules::class),
             $moduleFactory,
-            $this->createStub(ScopeConfigInterface::class)
+            $this->createStub(ScopeConfigInterface::class),
+            new MajorVersion(),
+            $this->createStub(MajorVersionChecker::class),
+            $this->createStub(ModuleManager::class)
         );
 
         $this->assertCount(2, $modules->getModules());
@@ -233,6 +245,8 @@ class ModulesTest extends TestCase
             'v-prefix' => [false, 'v1.0.0', '2.0.0', true],
             'patch release' => [false, '2.4.8-p1', '3.0.0', true],
             'major 0 to 1' => [false, '0.9.0', '1.0.0', true],
+            '0.x minor bump' => [false, '0.4.3', '0.5.0', true],
+            '0.x patch bump' => [false, '0.4.1', '0.4.9', false],
             'dev version' => [true, '1.0.0', '2.0.0', false],
             'dev branch' => [false, 'dev-main', '2.0.0', false],
             'branch alias' => [false, '1.0.x-dev', '2.0.0', false],
@@ -272,6 +286,53 @@ class ModulesTest extends TestCase
         ];
     }
 
+    public function testGetMajorVersionUpdatesWhenAdminNotificationDisabled(): void
+    {
+        $updates = [new MajorVersionUpdate('vendor/foo', '1.0.0', '2.0.0')];
+        $checker = $this->createStub(MajorVersionChecker::class);
+        $checker->method('getMajorUpdates')->willReturn($updates);
+
+        $viewModel = $this->createModulesViewModel($this->createConfigStub(true), $checker, false);
+        $this->assertSame($updates, $viewModel->getMajorVersionUpdates());
+    }
+
+    public function testGetMajorVersionUpdatesEmptyWhenAdminNotificationEnabled(): void
+    {
+        $checker = $this->createMock(MajorVersionChecker::class);
+        $checker->expects($this->never())->method('getMajorUpdates');
+
+        $viewModel = $this->createModulesViewModel($this->createConfigStub(true), $checker, true);
+        $this->assertSame([], $viewModel->getMajorVersionUpdates());
+    }
+
+    public function testGetMajorVersionUpdatesEmptyWhenConfigDisabled(): void
+    {
+        $checker = $this->createMock(MajorVersionChecker::class);
+        $checker->expects($this->never())->method('getMajorUpdates');
+
+        $viewModel = $this->createModulesViewModel($this->createConfigStub(false), $checker, false);
+        $this->assertSame([], $viewModel->getMajorVersionUpdates());
+    }
+
+    public function testGetMajorVersionUpdatesEmptyWhenApiFails(): void
+    {
+        $checker = $this->createStub(MajorVersionChecker::class);
+        $checker->method('getMajorUpdates')->willThrowException(new RuntimeException('API down'));
+
+        $viewModel = $this->createModulesViewModel($this->createConfigStub(true), $checker, false);
+        $this->assertSame([], $viewModel->getMajorVersionUpdates());
+    }
+
+    private function createConfigStub(bool $majorVersionCheck): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->expects($this->any())->method('isSetFlag')
+            ->with(MajorVersionCheck::CONFIG_PATH)
+            ->willReturn($majorVersionCheck);
+
+        return $scopeConfig;
+    }
+
     private function createModuleStub(bool $isDevVersion, string $composerVersion, string $latestComposerVersion): Module
     {
         $module = $this->createStub(Module::class);
@@ -282,14 +343,23 @@ class ModulesTest extends TestCase
         return $module;
     }
 
-    private function createModulesViewModel(?ScopeConfigInterface $scopeConfig = null): Modules
-    {
+    private function createModulesViewModel(
+        ?ScopeConfigInterface $scopeConfig = null,
+        ?MajorVersionChecker $majorVersionChecker = null,
+        bool $adminNotificationEnabled = true
+    ): Modules {
+        $moduleManager = $this->createStub(ModuleManager::class);
+        $moduleManager->method('isEnabled')->willReturn($adminNotificationEnabled);
+
         return new Modules(
             $this->createStub(ModuleListLoader::class),
             $this->createStub(ComposerPackageFactory::class),
             $this->createStub(LokiCheckoutModules::class),
             $this->createStub(ModuleFactory::class),
-            $scopeConfig ?? $this->createStub(ScopeConfigInterface::class)
+            $scopeConfig ?? $this->createStub(ScopeConfigInterface::class),
+            new MajorVersion(),
+            $majorVersionChecker ?? $this->createStub(MajorVersionChecker::class),
+            $moduleManager
         );
     }
 }
