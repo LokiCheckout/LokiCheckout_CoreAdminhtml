@@ -2,10 +2,12 @@
 
 namespace LokiCheckout\CoreAdminhtml\Cron;
 
+use LokiCheckout\CoreAdminhtml\Util\MajorVersion;
 use LokiCheckout\CoreAdminhtml\Util\MajorVersionChecker;
 use LokiCheckout\CoreAdminhtml\ValueObject\MajorVersionUpdate;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\FlagManager;
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\Notification\NotifierInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -22,12 +24,18 @@ class MajorVersionCheck
         private readonly FlagManager $flagManager,
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly LoggerInterface $logger,
+        private readonly ModuleManager $moduleManager,
+        private readonly MajorVersion $majorVersion,
     ) {
     }
 
     public function execute(): void
     {
         if (!$this->scopeConfig->isSetFlag(self::CONFIG_PATH)) {
+            return;
+        }
+
+        if (!$this->moduleManager->isEnabled('Magento_AdminNotification')) {
             return;
         }
 
@@ -62,7 +70,8 @@ class MajorVersionCheck
     private function getHash(array $updates): string
     {
         $items = array_map(
-            fn (MajorVersionUpdate $update) => $update->getComposerName() . ':' . $update->getLatestVersion(),
+            fn (MajorVersionUpdate $update) => $update->getComposerName() . ':'
+                . $this->majorVersion->getKey($update->getLatestVersion()),
             $updates
         );
         sort($items);
@@ -82,6 +91,6 @@ class MajorVersionCheck
         }
 
         return (string)__('The following packages have a new major version available:')
-            . "\n" . implode("\n", $lines);
+            . ' ' . implode('; ', $lines);
     }
 }

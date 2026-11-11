@@ -11,6 +11,7 @@ class MajorVersionChecker
     public function __construct(
         private readonly ComposerLock $composerLock,
         private readonly ComposerApi $composerApi,
+        private readonly MajorVersion $majorVersion,
     ) {
     }
 
@@ -39,7 +40,7 @@ class MajorVersionChecker
                 continue;
             }
 
-            if ($this->getMajorVersion($latestVersion) <= $this->getMajorVersion($installedVersion)) {
+            if (!$this->majorVersion->isNewer($latestVersion, $installedVersion)) {
                 continue;
             }
 
@@ -75,10 +76,5 @@ class MajorVersionChecker
     private function isStableVersion(string $version): bool
     {
         return (bool)preg_match('/^\d+(\.\d+)*(-?(p|patch)\.?\d*)?$/i', $version);
-    }
-
-    private function getMajorVersion(string $version): int
-    {
-        return (int)explode('.', $version, 2)[0];
     }
 }
