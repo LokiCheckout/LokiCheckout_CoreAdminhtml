@@ -51,11 +51,16 @@
             "path": "loki_checkout/module_overview/show_registered",
             "label": "Module Overview > Show Registration",
             "description": "Show if a module is registered with the LokiCheckout. This registration allows a module to be dumped into the file `app/etc/loki-checkout.json`, which is needed for various other tasks: Tailwind compilation under Luma; Playwright tests; etc."
+        },
+        {
+            "path": "loki_checkout/module_overview/major_version_check",
+            "label": "Module Overview > Notify About New Major Versions",
+            "description": "Check weekly (via cron) whether installed packages have a new major version available on composer.yireo.com and add an admin notification when they do."
         }
     ],
     "tests": {
-        "unit": 47,
-        "integration": 34,
+        "unit": 74,
+        "integration": 36,
         "functional": 0
     },
     "phpcs_severity": "9",
