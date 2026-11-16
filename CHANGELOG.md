@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.15] - 16 November 2026
+### Added
+- Show major version updates on Module Overview when AdminNotification is disabled
+- Notify admin weekly about new major versions of installed packages
+
+### Fixed
+- Compare major version keys, treat 0.x minor bumps as major and skip without AdminNotification
+
 ## [1.0.14] - 06 November 2026
 ### Added
 - Warn when installed major version differs from latest available
