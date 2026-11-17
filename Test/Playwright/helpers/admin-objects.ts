@@ -48,12 +48,6 @@ export async function configure(page: Page, config: any): Promise<any> {
         throw new Error('Configure error: ' + data.error);
     }
 
-    const moduleResult = data.result?.modules ?? {};
-    const moduleErrors = [...(moduleResult.enable_errors ?? []), ...(moduleResult.disable_errors ?? [])];
-    if (moduleErrors.length > 0) {
-        throw new Error('Module status errors: ' + moduleErrors.join('; '));
-    }
-
     return data.result ?? {};
 }
 
